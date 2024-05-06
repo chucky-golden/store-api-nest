@@ -1,4 +1,4 @@
-import { Post, Body, Controller } from '@nestjs/common';
+import { Post, Body, Controller, BadRequestException } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { SignupDto, SigninDto } from './dto/admin.dto';
 
@@ -8,7 +8,11 @@ export class AdminController {
 
     @Post('/signup')
     signUp(@Body() signUpDto: SignupDto): Promise<{ admin: any, token: string }> {
-        return this.adminService.signUp(signUpDto)
+        try{
+            return this.adminService.signUp(signUpDto)
+        }catch(err){
+            throw new BadRequestException('cannot create admin now')
+        }
     }
 
     @Post('/signin')

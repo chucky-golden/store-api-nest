@@ -30,6 +30,11 @@ export class AdminService {
         try{
             const { email, password } = signUpDto
 
+            const check = await this.adminModel.findOne({ email: email })
+            if(check){
+                throw new UnauthorizedException('email already exist')
+            }
+
             const hashedPassword = await bcrypt.hash(password, 10)
             
             signUpDto.password = hashedPassword
@@ -42,8 +47,12 @@ export class AdminService {
             return { admin, token }
 
         } catch (error: any) {
-            console.log('signing up ' + error);            
-            throw new InternalServerErrorException(`admin cannot be created now`);
+            if (error instanceof UnauthorizedException && error.message === 'email already exist') {
+                throw error;
+            } else {
+                console.log('signing up ' + error);            
+                throw new InternalServerErrorException(`admin cannot be created now`);
+            }
         }
     }
 
