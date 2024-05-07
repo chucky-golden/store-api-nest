@@ -50,3 +50,35 @@ export class SigninDto {
     @IsString()
     readonly password: string;
 }
+
+
+export class CreateOrderDto {
+
+    @IsNotEmpty()
+    @IsString()
+    readonly name: string;
+
+    @IsNotEmpty()
+    @IsEmail({}, { message: 'please enter correct email' })
+    readonly email: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly phone: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly address: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly amount: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly item: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly itemTotal: string;
+}

@@ -7,6 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schema/user.schema';
 import { SendMailService } from '../mailer';
+import { OrderSchema } from './schema/order.schema';
+import { JwtStrategy } from './jwt-strategy';
+import { MeService } from './me.service';
+import { MeController } from './me.controller';
 
 @Module({
   imports: [
@@ -22,9 +26,12 @@ import { SendMailService } from '../mailer';
         }
       }
     }),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])
+    MongooseModule.forFeature([
+      { name: 'User', schema: UserSchema },
+      { name: 'Order', schema: OrderSchema },
+    ])
   ],
-  controllers: [UsersController],
-  providers: [UsersService, SendMailService]
+  controllers: [UsersController, MeController],
+  providers: [UsersService, MeService, SendMailService, SendMailService, JwtStrategy, PassportModule]
 })
 export class UsersModule {}

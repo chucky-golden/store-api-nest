@@ -78,7 +78,7 @@ export class ProductService {
     // get single category/brand/product by id
     async getOne(id: string, type: string) {
         try{
-            let fetchData = []
+            let fetchData:any;
             if(type === 'category'){
                 fetchData = await this.categoryModel.findOne({ _id: id })
 
@@ -86,8 +86,13 @@ export class ProductService {
                 fetchData = await this.brandModel.findOne({ _id: id })
 
             }else if(type === 'product'){
-                fetchData = await this.productModel.findOne({ _id: id })
-
+                let data: any = await this.productModel.findOne({ _id: id })
+                let similarProduct = await this.productModel.find({ category: data.category, brand: data.brand }).limit(10)
+                let newData = {
+                    'product': data,
+                    'similarProducts': similarProduct
+                }
+                fetchData = newData
             }else{
                 throw new NotFoundException('id not found')
             }
