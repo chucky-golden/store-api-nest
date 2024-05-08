@@ -12,11 +12,11 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    AuthModule,
+    // AuthModule,
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema },
       { name: 'Order', schema: OrderSchema },
-    ])
+    ]),
   ],
   controllers: [UsersController, MeController],
   providers: [UsersService, MeService, SendMailService, SendMailService, JwtService]

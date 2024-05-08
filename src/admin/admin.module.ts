@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    AuthModule,
+    // AuthModule,
     MongooseModule.forFeature([
       { name: 'Admin', schema: AdminSchema }, 
       { name: 'Category', schema: CategorySchema },
