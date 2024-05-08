@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { SignupDto, SigninDto } from './dto/admin.dto';
-import { UploadService } from './common/cloudinary';
 import { SendMailService } from 'src/mailer';
 
 @Injectable()
@@ -17,9 +16,6 @@ export class AdminService {
 
         // bringing in jwt to generate tokens
         private jwtService: JwtService,
-
-        // image upload service
-        private readonly uploadService: UploadService,
 
         // send mail service
         private readonly sendMailService: SendMailService
