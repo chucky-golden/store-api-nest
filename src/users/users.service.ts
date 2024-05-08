@@ -22,7 +22,7 @@ export class UsersService {
     ){}
 
     // user register
-    async signUp(signUpDto: SignupDto): Promise<{ user: any, token: string }> {
+    async signUp(signUpDto: SignupDto): Promise<{ message: string, user: any, token: string }> {
         try {
             const { password } = signUpDto
 
@@ -33,9 +33,9 @@ export class UsersService {
             const user = await this.userModel.create(signUpDto)
 
             user.password = ''
-            const token = this.jwtService.sign({ id:user._id })
+            const token = this.jwtService.sign({ id: user._id, type: 'user' })
 
-            return { user, token }
+            return { message: 'successful', user, token }
 
         } catch (error: any) {
             console.log('signing up ' + error);            
@@ -44,7 +44,7 @@ export class UsersService {
     }
 
     // user login
-    async login(loginDto: SigninDto): Promise<{ user: any, token: string }>{
+    async login(loginDto: SigninDto): Promise<{ message: string, user: any, token: string }>{
         
         const { email, password } = loginDto
 
@@ -61,9 +61,9 @@ export class UsersService {
         }
 
         user.password = ''
-        const token = this.jwtService.sign({ id:user._id })
+        const token = this.jwtService.sign({ id: user._id, type: 'admin' })
 
-        return { user, token } 
+        return { message: 'successful', user, token }
     }
 
     // user forgot password
@@ -78,7 +78,7 @@ export class UsersService {
 
         let send = await this.sendMailService.sendMail(email, 'Password Recovery')
         if(send === true){
-            return email
+            return { message: 'email sent', email}
         }else{
             throw new BadRequestException('error sending mail')
         }

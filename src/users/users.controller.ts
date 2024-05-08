@@ -7,12 +7,12 @@ export class UsersController {
     constructor(private userService: UsersService){}
 
     @Post('/signup')
-    signUp(@Body() signUpDto: SignupDto): Promise<{ user: any, token: string }> {
+    signUp(@Body() signUpDto: SignupDto): Promise<{ message: string, user: any, token: string }> {
         return this.userService.signUp(signUpDto)
     }
 
     @Post('/login')
-    login(@Body() signinDto: SigninDto): Promise<{ user: string, token: string }> {
+    login(@Body() signinDto: SigninDto): Promise<{ message: string, user: string, token: string }> {
         return this.userService.login(signinDto)
     }
 

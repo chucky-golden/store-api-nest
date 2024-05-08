@@ -26,7 +26,7 @@ export class AdminService {
     ){}
 
     // admin register
-    async signUp(signUpDto: SignupDto): Promise<{ admin: any, token: string }> {
+    async signUp(signUpDto: SignupDto): Promise<{ message: string, admin: any, token: string }> {
         try{
             const { email, password } = signUpDto
 
@@ -42,9 +42,9 @@ export class AdminService {
             const admin = await this.adminModel.create(signUpDto)
 
             admin.password = ''
-            const token = this.jwtService.sign({ id:admin._id })
+            const token = this.jwtService.sign({ id: admin._id, type: 'admin' })
 
-            return { admin, token }
+            return { message: 'successful', admin, token }
 
         } catch (error: any) {
             if (error instanceof UnauthorizedException && error.message === 'email already exist') {
@@ -57,7 +57,7 @@ export class AdminService {
     }
 
     // admin login
-    async login(loginDto: SigninDto): Promise<{ admin: any, token: string }> {
+    async login(loginDto: SigninDto): Promise<{ message: string, admin: any, token: string }> {
         
         const { email, password } = loginDto
 
@@ -74,9 +74,9 @@ export class AdminService {
         }
 
         admin.password = ''
-        const token = this.jwtService.sign({ id:admin._id })
+        const token = this.jwtService.sign({ id: admin._id, type: 'admin' })
 
-        return { admin, token }
+        return { message: 'successful', admin, token }
     }
 
 
@@ -92,7 +92,7 @@ export class AdminService {
 
         let send = await this.sendMailService.sendMail(email, 'Password Recovery')
         if(send === true){
-            return email
+            return { message: 'successful', email}
         }else{
             throw new BadRequestException('error sending mail')
         }

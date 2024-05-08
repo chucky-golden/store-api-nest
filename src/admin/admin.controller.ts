@@ -7,7 +7,7 @@ export class AdminController {
     constructor(private adminService: AdminService){}
 
     @Post('/signup')
-    signUp(@Body() signUpDto: SignupDto): Promise<{ admin: any, token: string }> {
+    signUp(@Body() signUpDto: SignupDto): Promise<{ message: string, admin: any, token: string }> {
         try{
             return this.adminService.signUp(signUpDto)
         }catch(err){
@@ -16,7 +16,7 @@ export class AdminController {
     }
 
     @Post('/signin')
-    signIn(@Body() signinDto: SigninDto): Promise<{ token: string }> {
+    signIn(@Body() signinDto: SigninDto): Promise<{ message: string, token: string }> {
         return this.adminService.login(signinDto)
     }
 

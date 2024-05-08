@@ -3,7 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './schema/order.schema';
 import { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/user.dto';
-import { UpdateOrderDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcryptjs';
+import { User } from './schema/user.schema';
 
 @Injectable()
 export class MeService {
@@ -11,6 +13,9 @@ export class MeService {
         // bringing in models
         @InjectModel(Order.name)
         private orderModel: Model<Order>,
+
+        @InjectModel(User.name)
+        private userModel: Model<User>,
     ){}
 
 
@@ -53,39 +58,46 @@ export class MeService {
     }
 
 
-    // edit category / brand
-    async editData(updateOrderDto: UpdateOrderDto) {
-        try{
-            if(dataDto.type === 'brand'){
-                await this.brandModel.updateOne({ _id: dataDto.id }, 
-                    {
-                        $set:{
-                            name: dataDto.name
-                        }
-                    }
-                )
+    // edit user profile
+    async editData(id: string, updateUserDto: UpdateUserDto) {
+        try{            
+            let data = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
+                // tells mongoose to return the updated data because by default it returns the original
+                // data before updating was done
+                new: true,    
+                // tells mongoose to run the validations defined in the schema.
+                runValidators: true
+            })
 
-            }else if(dataDto.type === 'category'){
-                await this.categoryModel.updateOne({ _id: dataDto.id }, 
-                    {
-                        $set:{
-                            name: dataDto.name
-                        }
-                    }
-                )
-            }else{
-                throw new BadRequestException('invalid entry')
-            }
-
-            return { message: "successful", dataDto }
+            data.password = ''
+            return { message: 'profile updated', data}
 
         } catch (error: any) {
-            if (error instanceof BadRequestException && error.message === 'invalid entry') {
-                throw error;
-            } else {
-                console.log('data error ' + error);            
-                throw new InternalServerErrorException(`error processing request`);
-            }
+            console.log('message', error);            
+            throw new InternalServerErrorException(`error processing request`);
+        }
+    }
+
+    // edit user password
+    async editPassword(id: string, updateUserDto: UpdateUserDto) {
+        try{
+            const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+            updateUserDto = { ...updateUserDto, password: hashedPassword };
+
+            let data = await this.userModel.findByIdAndUpdate(id, updateUserDto, {
+                // tells mongoose to return the updated data because by default it returns the original
+                // data before updating was done
+                new: true,    
+                // tells mongoose to run the validations defined in the schema.
+                runValidators: true
+            })
+
+            data.password = ''
+            return { message: 'password updated', data}
+
+        } catch (error: any) {
+            console.log('message', error);            
+            throw new InternalServerErrorException(`error processing request`);
         }
     }
 

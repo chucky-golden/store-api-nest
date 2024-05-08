@@ -16,7 +16,7 @@ export class User extends Document{
     mname?: string
 
     @Prop()
-    email: string
+    readonly email: string
 
     @Prop()
     phone: string
