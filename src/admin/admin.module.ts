@@ -9,7 +9,6 @@ import { ProductService } from './product.service';
 import { SendMailService } from '../mailer';
 import { CategorySchema, BrandSchema, ProductSchema } from './schema/products.schema';
 import { AuthModule } from '../auth/auth.module';
-import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -22,6 +21,6 @@ import { JwtService } from '@nestjs/jwt';
     ])
   ],
   controllers: [AdminController, ProductController],
-  providers: [AdminService, UploadService, ProductService, SendMailService, JwtService]
+  providers: [AdminService, UploadService, ProductService, SendMailService]
 })
 export class AdminModule {}

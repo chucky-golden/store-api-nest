@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Admin } from './schema/admin.schema';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { AuthService } from '../auth/auth.service';
 import { SignupDto, SigninDto } from './dto/admin.dto';
 import { SendMailService } from 'src/mailer';
 
@@ -15,7 +15,7 @@ export class AdminService {
         private adminModel: Model<Admin>,
 
         // bringing in jwt to generate tokens
-        private jwtService: JwtService,
+        private authService: AuthService,
 
         // send mail service
         private readonly sendMailService: SendMailService
@@ -38,7 +38,7 @@ export class AdminService {
             const admin = await this.adminModel.create(signUpDto)
 
             admin.password = ''
-            const token = this.jwtService.sign({ id: admin._id, type: 'admin' })
+            const token = await this.authService.generateToken({ id: admin._id, type: 'admin' })
 
             return { message: 'successful', admin, token }
 
@@ -70,7 +70,7 @@ export class AdminService {
         }
 
         admin.password = ''
-        const token = this.jwtService.sign({ id: admin._id, type: 'admin' })
+        const token = await this.authService.generateToken({ id: admin._id, type: 'admin' })
 
         return { message: 'successful', admin, token }
     }

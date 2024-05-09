@@ -3,7 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductDto } from './dto/admin.dto';
 import { ProductService } from './product.service';
 import { UploadService } from './common/cloudinary';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
 
 
 @Controller('/api/v1/admin/products')
@@ -17,7 +17,7 @@ export class ProductController {
 
     // add category/brand
     @Post('/data')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     createData(@Body() body: { name: string, type: string }){       
         return this.productService.addData(body)
     }
@@ -25,7 +25,7 @@ export class ProductController {
     // upload product
     @Post('/product')
     @UseInterceptors(FileInterceptor('image'))
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     async createProduct(@UploadedFile() image: Express.Multer.File, @Body() body: ProductDto){   
         let data: any = await this.uploadService.generateUploadURL(image);
         if(data === null){
@@ -65,7 +65,7 @@ export class ProductController {
 
     // edit category
     @Patch('/editdata')
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     editData(@Body() body: { id: string, name: string, type: string }){       
         return this.productService.editData(body)
     }

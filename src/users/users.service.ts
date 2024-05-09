@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { AuthService } from '../auth/auth.service';
 import { SignupDto, SigninDto } from './dto/user.dto';
 import { SendMailService } from '../mailer';
 
@@ -15,7 +15,7 @@ export class UsersService {
         private userModel: Model<User>,
 
         // bringing in jwt to generate tokens
-        private jwtService: JwtService,
+        private authService: AuthService,
 
         // send mail service
         private readonly sendMailService: SendMailService
@@ -33,7 +33,7 @@ export class UsersService {
             const user = await this.userModel.create(signUpDto)
 
             user.password = ''
-            const token = this.jwtService.sign({ id: user._id, type: 'user' })
+            const token = await this.authService.generateToken({ id: user._id, type: 'user' })
 
             return { message: 'successful', user, token }
 
@@ -61,7 +61,7 @@ export class UsersService {
         }
 
         user.password = ''
-        const token = this.jwtService.sign({ id: user._id, type: 'admin' })
+        const token = await this.authService.generateToken({ id: user._id, type: 'user' })
 
         return { message: 'successful', user, token }
     }
