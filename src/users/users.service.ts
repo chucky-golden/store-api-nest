@@ -54,6 +54,10 @@ export class UsersService {
             throw new UnauthorizedException('invalid email or password')
         }
 
+        if(user.active !== 1){
+            throw new UnauthorizedException('account has been blocked')
+        }
+
         const isPasswordMatched = await bcrypt.compare(password, user.password)
 
         if(!isPasswordMatched){

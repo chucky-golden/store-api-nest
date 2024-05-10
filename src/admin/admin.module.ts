@@ -9,6 +9,10 @@ import { ProductService } from './product.service';
 import { SendMailService } from '../mailer';
 import { CategorySchema, BrandSchema, ProductSchema } from './schema/products.schema';
 import { AuthModule } from '../auth/auth.module';
+import { MyUsersController } from './myusers.controller';
+import { MyUsersService } from './myusers.service';
+import { UserSchema } from 'src/users/schema/user.schema';
+import { OrderSchema } from 'src/users/schema/order.schema';
 
 @Module({
   imports: [
@@ -17,10 +21,12 @@ import { AuthModule } from '../auth/auth.module';
       { name: 'Admin', schema: AdminSchema }, 
       { name: 'Category', schema: CategorySchema },
       { name: 'Brand', schema: BrandSchema },
-      { name: 'Product', schema: ProductSchema }
+      { name: 'Product', schema: ProductSchema },
+      { name: 'User', schema: UserSchema },
+      { name: 'Order', schema: OrderSchema }
     ])
   ],
-  controllers: [AdminController, ProductController],
-  providers: [AdminService, UploadService, ProductService, SendMailService]
+  controllers: [AdminController, ProductController, MyUsersController],
+  providers: [AdminService, UploadService, ProductService, MyUsersService, SendMailService]
 })
 export class AdminModule {}

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './schema/order.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateOrderDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -22,7 +22,7 @@ export class MeService {
     // add order
     async addOrder(createOrderDto: CreateOrderDto) {
         try{
-            let orderId: string = ''
+            let orderId: string = 'order-'
             
             const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             
@@ -49,14 +49,45 @@ export class MeService {
 
     // get single order by id
     async getOne(id: string) {
-        try{
-            return await this.orderModel.findOne({ _id: id })
-        } catch (error: any) {
-            console.log('data error ' + error);            
-            throw new NotFoundException(`d not found`);
+        const isValidId = mongoose.isValidObjectId(id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
         }
+        
+        const order = await this.orderModel.findById(id)
+
+        if(!order){
+            throw new Error('order not found')
+        }
+
+        return order
     }
 
+
+    // edit user order and set paid to 1 after payment is done
+    async updateOrder(id: string) {
+
+        const isValidId = mongoose.isValidObjectId(id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }        
+
+        try{            
+            const data = await this.orderModel.findOneAndUpdate(
+                { _id: id },
+                { $set: { paid: 1 } },
+                { new: true }
+            );
+
+            return { message: 'order updated', data}
+
+        } catch (error: any) {
+            console.log('message', error);            
+            throw new InternalServerErrorException(`error processing request`);
+        }
+    }
 
     // edit user profile
     async editData(id: string, updateUserDto: UpdateUserDto) {

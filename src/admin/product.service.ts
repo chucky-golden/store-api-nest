@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category, Brand, Product } from './schema/products.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class ProductService {
@@ -77,6 +77,12 @@ export class ProductService {
 
     // get single category/brand/product by id
     async getOne(id: string, type: string) {
+        const isValidId = mongoose.isValidObjectId(id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+        
         try{
             let fetchData:any;
             if(type === 'category'){
@@ -111,6 +117,12 @@ export class ProductService {
 
     // edit category / brand
     async editData(dataDto: { id: string, name: string, type: string }) {
+        const isValidId = mongoose.isValidObjectId(dataDto.id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+
         try{
             if(dataDto.type === 'brand'){
                 await this.brandModel.updateOne({ _id: dataDto.id }, 
@@ -147,20 +159,23 @@ export class ProductService {
 
     // edit product
     async updateProduct(dataDto: any){
+        const isValidId = mongoose.isValidObjectId(dataDto.id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+        
         try{
-            let product = await this.brandModel.updateOne({ _id: dataDto.id }, 
-                {
-                    $set:{
-                        name: dataDto.name
-                    }
-                }
+            let product = await this.brandModel.findOneAndUpdate({ _id: dataDto.id }, 
+                { $set: dataDto },
+                { new: true }
             )
 
             if(!product){
                 throw new BadRequestException('update error')
             }
 
-            return { message: "update successful", dataDto }
+            return { message: "update successful", product }
 
         } catch (error: any) {
             if (error instanceof BadRequestException && error.message === 'update error') {
@@ -175,17 +190,21 @@ export class ProductService {
     
     // delete single category/brand/product by id
     async deleteOne(id: string, type: string) {
-        try{
-            let fetchData = []
+        const isValidId = mongoose.isValidObjectId(id)
 
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+        
+        try{
             if(type === 'category'){
-                fetchData = await this.categoryModel.findByIdAndDelete({ _id: id })
+                await this.categoryModel.findByIdAndDelete({ _id: id })
 
             }else if(type === 'brand'){
-                fetchData = await this.brandModel.findByIdAndDelete({ _id: id })
+                await this.brandModel.findByIdAndDelete({ _id: id })
 
             }else if(type === 'product'){
-                fetchData = await this.productModel.findByIdAndDelete({ _id: id })
+                await this.productModel.findByIdAndDelete({ _id: id })
 
             }else{
                 throw new NotFoundException('id not found')
