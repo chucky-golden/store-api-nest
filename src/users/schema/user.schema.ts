@@ -7,13 +7,7 @@ import { Document } from 'mongoose'
 export class User extends Document{ 
 
     @Prop()
-    fname: string
-
-    @Prop()
-    lname: string
-
-    @Prop({ required: false })
-    mname?: string
+    name: string
 
     @Prop()
     readonly email: string
@@ -24,17 +18,20 @@ export class User extends Document{
     @Prop()
     password: string
 
-    @Prop()
+    @Prop({ required: false })
     address: string
 
-    @Prop()
+    @Prop({ required: false })
     country: string
 
-    @Prop()
+    @Prop({ required: false })
     state: string
     
     @Prop({ default: 1 })
     active: Number
+    
+    @Prop({ default: false })
+    emailVerified: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

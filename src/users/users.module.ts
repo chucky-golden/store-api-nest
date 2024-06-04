@@ -8,6 +8,7 @@ import { OrderSchema } from './schema/order.schema';
 import { MeService } from './me.service';
 import { MeController } from './me.controller';
 import { AuthModule } from '../auth/auth.module';
+import { ContactSchema } from './schema/contact.schema';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from '../auth/auth.module';
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema },
       { name: 'Order', schema: OrderSchema },
+      { name: 'Contact', schema: ContactSchema },
     ]),
   ],
   controllers: [UsersController, MeController],

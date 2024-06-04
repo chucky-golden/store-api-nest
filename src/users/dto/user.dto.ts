@@ -2,17 +2,9 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 
 export class SignupDto {
-
     @IsNotEmpty()
     @IsString()
-    readonly fname: string;
-
-    @IsNotEmpty()
-    @IsString()
-    readonly lname: string;
-
-    @IsOptional()
-    readonly mname?: string;
+    readonly name: string;
 
     @IsNotEmpty()
     @IsEmail({}, { message: 'please enter correct email' })
@@ -26,15 +18,15 @@ export class SignupDto {
     @IsString()
     password: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     readonly address: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     readonly country: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     readonly state: string;
 }
