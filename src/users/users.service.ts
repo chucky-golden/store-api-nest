@@ -279,7 +279,7 @@ export class UsersService {
 
         await sendmail(email, 'OTP Mail', emailBody)
 
-        return { message: "success", email }
+        return { message: "success", email, otp: num }
     }
     
     // user verify email address
