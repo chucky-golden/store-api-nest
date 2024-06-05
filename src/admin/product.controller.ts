@@ -1,5 +1,5 @@
-import { Post, Body, Controller, UseGuards, Get, Query, UploadedFile, UseInterceptors, BadRequestException, Param, Patch, Delete } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Post, Body, Controller, UseGuards, Get, Query, UploadedFiles, UseInterceptors, BadRequestException, Param, Patch, Delete } from '@nestjs/common';
+import { FilesInterceptor  } from '@nestjs/platform-express';
 import { ProductDto } from './dto/admin.dto';
 import { ProductService } from './product.service';
 import { UploadService } from './common/cloudinary';
@@ -22,21 +22,27 @@ export class ProductController {
         return this.productService.addData(body)
     }
 
+    // upload products
+    @Post('/getproductimg')
+    @UseInterceptors(FilesInterceptor('files'))
+    @UseGuards(JwtAuthGuard)
+    async getProductImg(@UploadedFiles() files: Express.Multer.File[]){  
+         
+        let data: any = await this.uploadService.generateUploadURLs(files)
+        
+        if(data === null){
+            throw new BadRequestException('error uploading product files')
+        }
+
+        return data
+    }
+
     // upload product
     @Post('/product')
-    @UseInterceptors(FileInterceptor('image'))
     @UseGuards(JwtAuthGuard)
-    async createProduct(@UploadedFile() image: Express.Multer.File, @Body() body: ProductDto){   
-        let data: any = await this.uploadService.generateUploadURL(image);
-        if(data === null){
-            throw new BadRequestException('error uploading product image')
-        }
-        
-        // Combine body and upload data into a single object
-        const productData = { ...body, ...data };
-
+    async createProduct(@Body() body: ProductDto){
         // Call the productService to add the product
-        return this.productService.addProduct(productData);
+        return this.productService.addProduct(body);
     }
 
     // get all products, brand or category depending on query
@@ -72,29 +78,13 @@ export class ProductController {
 
     // edit product
     @Patch('/product')
-    @UseInterceptors(FileInterceptor('image'))
-    async editProduct(@UploadedFile() image: Express.Multer.File, @Body() body: any,
-    ) {
+    async editProduct(@Body() body: any,) {
         try {
             // Retrieve the product data from the database
-            const product:any = await this.productService.getOne(body.id, 'product')
+            const product: any = await this.productService.getOne(body.id, 'product')
             
             if (!product) {
                 throw new BadRequestException('Product not found');
-            }
-
-            // If a new image is provided, delete the current image from Cloudinary
-            if (image) {
-                await this.uploadService.deleteImage(product.publicId);
-
-                // Upload the new image to Cloudinary
-                const newImageData:any = await this.uploadService.generateUploadURL(image);
-
-                // Update the product data with the new image URL and public ID
-                body = {
-                    ...body,
-                    ...newImageData
-                };
             }
 
             // Update the product data

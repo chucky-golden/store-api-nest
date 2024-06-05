@@ -42,6 +42,25 @@ export class UploadService {
         }
     }
 
+    generateUploadURLs(files: Express.Multer.File[]): Promise<any[]> {
+        return Promise.all(files.map((file) => {
+            return new Promise((resolve, reject) => {
+                const bufferStream = streamifier.createReadStream(file.buffer);
+    
+                const uploadStream = cloudinaryV2.uploader.upload_stream((error: any, result: any) => {
+                    if (error) {
+                        console.error('Upload error:', error);
+                        reject(error);
+                    } else {
+                        resolve({ uploadUrl: result.secure_url });
+                    }
+                });
+    
+                bufferStream.pipe(uploadStream);
+            });
+        }));
+    }
+
     async deleteImage(id: any){
         try {
             // Use the Cloudinary API to delete the image
