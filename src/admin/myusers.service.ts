@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Order } from '../users/schema/order.schema';
 import { User } from '../users/schema/user.schema';
+import { paginate, PaginationResult } from './common/pagination'
 
 @Injectable()
 export class MyUsersService {
@@ -17,20 +18,18 @@ export class MyUsersService {
 
 
     // get all product/brand/orders
-    async getAll(data: string ) {
-        let fetchData = []
+    async getAll(query: any) {
+        let result;
 
-        if(data === 'orders'){
-            fetchData = await this.orderModel.find().sort({ createdAt: -1 })
-
-        }else if(data === 'users'){
-            fetchData = await this.userModel.find().sort({ createdAt: -1 })
-
+        if(query.type === 'orders'){
+            result = await paginate(this.orderModel, query);
+        }else if(query.type === 'users'){
+            result = await paginate(this.userModel, query);
         }else{
             throw new NotFoundException('invalid data (type parameter not specified)')
         }
 
-        return fetchData
+        return result
     }
     
 

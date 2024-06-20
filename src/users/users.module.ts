@@ -9,6 +9,7 @@ import { MeService } from './me.service';
 import { MeController } from './me.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ContactSchema } from './schema/contact.schema';
+import { ReviewSchema } from 'src/admin/schema/products.schema';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ContactSchema } from './schema/contact.schema';
       { name: 'User', schema: UserSchema },
       { name: 'Order', schema: OrderSchema },
       { name: 'Contact', schema: ContactSchema },
+      { name: 'Review', schema: ReviewSchema },
     ]),
   ],
   controllers: [UsersController, MeController],

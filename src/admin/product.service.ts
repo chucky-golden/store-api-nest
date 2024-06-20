@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Category, Brand, Product } from './schema/products.schema';
+import { Category, Brand, Product, Review } from './schema/products.schema';
 import mongoose, { Model } from 'mongoose';
+import { paginate } from './common/pagination'
 
 @Injectable()
 export class ProductService {
@@ -15,6 +16,9 @@ export class ProductService {
 
         @InjectModel(Product.name)
         private productModel: Model<Product>,
+
+        @InjectModel(Review.name)
+        private reviewModel: Model<Review>,
     ){}
 
 
@@ -56,23 +60,78 @@ export class ProductService {
     }
 
     // get all product/brand/category
-    async getAll(data: string ) {
-        let fetchData = []
+    async getAll(query: any ) {
+        let result;
 
-        if(data === 'category'){
-            fetchData = await this.categoryModel.find().sort({ createdAt: -1 })
-
-        }else if(data === 'brand'){
-            fetchData = await this.brandModel.find().sort({ createdAt: -1 })
-
-        }else if(data === 'product'){
-            fetchData = await this.productModel.find().sort({ createdAt: -1 })
-
-        }else{
-            throw new NotFoundException('invalid data')
+        if (query.type === 'category') {
+            result = await paginate(this.categoryModel, query);
+        } else if (query.type === 'brand') {
+            result = await paginate(this.brandModel, query);
+        } else if (query.type === 'product') {
+            result = await paginate(this.productModel, query);
+        } else {
+            throw new NotFoundException('Invalid type');
         }
 
-        return fetchData
+        return result;
+    }
+
+    // get single product review
+    async getProductReviews(query: any, _id: string){
+        const isValidId = mongoose.isValidObjectId(_id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+
+        return await paginate(this.reviewModel, query, { _id });
+    }
+
+    // get single product review count
+    async getProductByReviewCount(_id: string){
+        const isValidId = mongoose.isValidObjectId(_id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+
+        // Aggregate ratings count and sum of ratings for the specified userId
+        const ratingData = await this.reviewModel.aggregate([
+            { $match: { productId: _id } },
+            {
+                $group: {
+                    _id: "$rating",
+                    count: { $sum: 1 },
+                    sumRating: { $sum: "$rating" }
+                }
+            }
+        ])
+
+        // Convert the aggregation result to a more readable format
+        const ratingCountsMap: any = {};
+        let totalSumRating = 0;
+        ratingData.forEach((item: any) => {
+            ratingCountsMap[item._id] = item.count;
+            totalSumRating += item.sumRating;
+        });
+
+        // Ensure all rating values (1-5) are present in the map, even if the count is 0
+        for (let i = 1; i <= 5; i++) {
+            if (!ratingCountsMap[i]) {
+                ratingCountsMap[i] = 0;
+            }
+        }
+
+        // Get cumulative count of ratings
+        const totalRatings = await this.reviewModel.countDocuments({ productId: _id });
+    
+        return {
+            data: {
+                totalRatings,
+                ratingCounts: ratingCountsMap,
+                sumRating: totalSumRating
+            }
+        }
     }
 
     // get single category/brand/product by id

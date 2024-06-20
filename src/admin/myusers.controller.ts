@@ -1,6 +1,4 @@
-import { Post, Body, Controller, UseGuards, Get, Query, UploadedFile, UseInterceptors, BadRequestException, Param, Patch, Delete } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ProductDto } from './dto/admin.dto';
+import { Post, Body, Controller, UseGuards, Get, Query, Param, Patch } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
 import { MyUsersService } from './myusers.service';
 
@@ -13,8 +11,8 @@ export class MyUsersController {
     
     // get all orders/users depending on query
     @Get()
-    getAllElements(@Query('type') type: "orders" | "users"){     
-        return this.myUsersService.getAll(type)
+    getAllElements(@Query() query: Record<string, any>){     
+        return this.myUsersService.getAll(query)
     }
 
     // get order by id

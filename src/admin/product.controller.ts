@@ -22,7 +22,7 @@ export class ProductController {
         return this.productService.addData(body)
     }
 
-    // upload products
+    // upload products img
     @Post('/getproductimg')
     @UseInterceptors(FilesInterceptor('files'))
     @UseGuards(JwtAuthGuard)
@@ -46,9 +46,21 @@ export class ProductController {
     }
 
     // get all products, brand or category depending on query
-    @Get()
-    getAllElements(@Query('type') type: "category" | "product" | "brand"){     
-        return this.productService.getAll(type)
+   @Get()
+    getAllElements(@Query() query: Record<string, any>) {
+        return this.productService.getAll(query);
+    }
+
+    // get product review by id
+    @Get('/productreviews/:productid')
+    getProductReviews(@Query() query: Record<string, any>, @Param('productid') id: string){
+        return this.productService.getProductReviews(query, id)
+    }
+
+    // get product review count by id
+    @Get('/productreviewscount/:productid')
+    getProductByReviewCount(@Param('productid') id: string){
+        return this.productService.getProductByReviewCount(id)
     }
 
     // get product by id

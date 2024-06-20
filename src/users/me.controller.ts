@@ -1,6 +1,6 @@
-import { Post, Body, Controller, UseGuards, Get, Param, Patch, NotFoundException } from '@nestjs/common';
+import { Post, Body, Controller, UseGuards, Get, Param, Patch, NotFoundException, Query } from '@nestjs/common';
 import { MeService } from './me.service';
-import { CreateOrderDto } from './dto/user.dto';
+import { CreateOrderDto, CreateReview } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -19,11 +19,18 @@ export class MeController {
         return this.meService.addOrder(body)
     }
 
+    // add order
+    @Post('/review')
+    @UseGuards(JwtAuthGuard)
+    createReview(@Body() body: CreateReview){       
+        return this.meService.addReview(body)
+    }
+
     // get all orders for history
     @Get('/orders/:email')
     @UseGuards(JwtAuthGuard)
-    getAllOrdersByEmail(@Param('email') email: string){     
-        return this.meService.getAll(email)
+    getAllOrdersByEmail(@Param('email') email: string, @Query() query: Record<string, any>){     
+        return this.meService.getAll(email, query)
     }
 
     // get order by id

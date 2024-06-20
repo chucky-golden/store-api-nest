@@ -40,7 +40,21 @@ export class Product extends Document{
     uploadUrl: []
 }
 
+@Schema({ timestamps: true })
+export class Review extends Document{ 
+
+    @Prop()
+    productId: string
+
+    @Prop()
+    rating: number
+
+    @Prop()
+    review: string
+}
+
 
 export const ProductSchema = SchemaFactory.createForClass(Product)
+export const ReviewSchema = SchemaFactory.createForClass(Review)
 export const CategorySchema = SchemaFactory.createForClass(Category)
 export const BrandSchema = SchemaFactory.createForClass(Brand)

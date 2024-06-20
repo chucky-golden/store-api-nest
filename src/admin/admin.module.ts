@@ -7,7 +7,7 @@ import { UploadService } from './common/cloudinary';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { SendMailService } from '../mailer';
-import { CategorySchema, BrandSchema, ProductSchema } from './schema/products.schema';
+import { CategorySchema, BrandSchema, ProductSchema, ReviewSchema } from './schema/products.schema';
 import { AuthModule } from '../auth/auth.module';
 import { MyUsersController } from './myusers.controller';
 import { MyUsersService } from './myusers.service';
@@ -22,6 +22,7 @@ import { OrderSchema } from 'src/users/schema/order.schema';
       { name: 'Category', schema: CategorySchema },
       { name: 'Brand', schema: BrandSchema },
       { name: 'Product', schema: ProductSchema },
+      { name: 'Review', schema: ReviewSchema },
       { name: 'User', schema: UserSchema },
       { name: 'Order', schema: OrderSchema }
     ])

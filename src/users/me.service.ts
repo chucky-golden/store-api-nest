@@ -2,10 +2,12 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './schema/order.schema';
 import mongoose, { Model } from 'mongoose';
-import { CreateOrderDto } from './dto/user.dto';
+import { CreateOrderDto, CreateReview } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { User } from './schema/user.schema';
+import { paginate } from './common/pagination'
+import { Review } from 'src/admin/schema/products.schema';
 
 @Injectable()
 export class MeService {
@@ -16,6 +18,9 @@ export class MeService {
 
         @InjectModel(User.name)
         private userModel: Model<User>,
+
+        @InjectModel(Review.name)
+        private reviewModel: Model<Review>,
     ){}
 
 
@@ -41,9 +46,23 @@ export class MeService {
     }
 
 
+    // add order
+    async addReview(createReview: CreateReview) {
+        try{
+            const review = await this.reviewModel.create({ ...createReview })
+            return { message: "review created", review }
+
+        } catch (error: any) {
+            console.log('data error ' + error);            
+            throw new InternalServerErrorException(`review cannot be created now`);  
+        }
+    }
+
+
     // get all users order using email
-    async getAll(email: string ) {
-        return await this.orderModel.find({ email }).sort({ createdAt: -1 })
+    async getAll(email: string, query: any) {
+        return await paginate(this.orderModel, query, { email });
+         await this.orderModel.find().sort({ createdAt: -1 })
     }
 
 
