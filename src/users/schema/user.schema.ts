@@ -12,10 +12,10 @@ export class User extends Document{
     @Prop()
     readonly email: string
 
-    @Prop()
+    @Prop({ required: false })
     phone: string
 
-    @Prop()
+    @Prop({ required: false })
     password: string
 
     @Prop({ required: false })
