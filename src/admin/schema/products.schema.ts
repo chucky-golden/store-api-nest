@@ -47,14 +47,22 @@ export class Review extends Document{
     productId: string
 
     @Prop()
-    rating: number
+    review: string
+}
+
+@Schema({ timestamps: true })
+export class Rating extends Document{ 
 
     @Prop()
-    review: string
+    productId: string
+
+    @Prop()
+    rating: number
 }
 
 
 export const ProductSchema = SchemaFactory.createForClass(Product)
 export const ReviewSchema = SchemaFactory.createForClass(Review)
+export const RatingSchema = SchemaFactory.createForClass(Rating)
 export const CategorySchema = SchemaFactory.createForClass(Category)
 export const BrandSchema = SchemaFactory.createForClass(Brand)

@@ -51,12 +51,20 @@ export class CreateReview {
     readonly productId: string;
 
     @IsNotEmpty()
-    @IsNumber()
-    readonly rating: number;
+    @IsString()
+    readonly review: string;
+}
+
+
+export class CreateRating {
 
     @IsNotEmpty()
     @IsString()
-    readonly review: string;
+    readonly productId: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly rating: number;
 }
 
 

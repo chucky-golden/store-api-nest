@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Category, Brand, Product, Review } from './schema/products.schema';
+import { Category, Brand, Product, Review, Rating } from './schema/products.schema';
 import mongoose, { Model } from 'mongoose';
 import { paginate } from './common/pagination'
 
@@ -19,6 +19,9 @@ export class ProductService {
 
         @InjectModel(Review.name)
         private reviewModel: Model<Review>,
+
+        @InjectModel(Rating.name)
+        private ratingModel: Model<Rating>,
     ){}
 
 
@@ -87,8 +90,19 @@ export class ProductService {
         return await paginate(this.reviewModel, query, { _id });
     }
 
+    // get single product rating
+    async getProductRating(query: any, _id: string){
+        const isValidId = mongoose.isValidObjectId(_id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+
+        return await paginate(this.ratingModel, query, { _id });
+    }
+
     // get single product review count
-    async getProductByReviewCount(_id: string){
+    async getProductByRatingCount(_id: string){
         const isValidId = mongoose.isValidObjectId(_id)
 
         if(!isValidId){
@@ -96,7 +110,7 @@ export class ProductService {
         }
 
         // Aggregate ratings count and sum of ratings for the specified userId
-        const ratingData = await this.reviewModel.aggregate([
+        const ratingData = await this.ratingModel.aggregate([
             { $match: { productId: _id } },
             {
                 $group: {

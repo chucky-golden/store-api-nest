@@ -57,10 +57,16 @@ export class ProductController {
         return this.productService.getProductReviews(query, id)
     }
 
+    // get product rating by id
+    @Get('/productratings/:productid')
+    getProductRating(@Query() query: Record<string, any>, @Param('productid') id: string){
+        return this.productService.getProductRating(query, id)
+    }
+
     // get product review count by id
     @Get('/productreviewscount/:productid')
-    getProductByReviewCount(@Param('productid') id: string){
-        return this.productService.getProductByReviewCount(id)
+    getProductByRatingCount(@Param('productid') id: string){
+        return this.productService.getProductByRatingCount(id)
     }
 
     // get product by id

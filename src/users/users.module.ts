@@ -9,7 +9,8 @@ import { MeService } from './me.service';
 import { MeController } from './me.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ContactSchema } from './schema/contact.schema';
-import { ReviewSchema } from 'src/admin/schema/products.schema';
+import { ProductSchema, RatingSchema, ReviewSchema } from 'src/admin/schema/products.schema';
+import { FavouriteSchema } from './schema/favourite.schema';
 
 @Module({
   imports: [
@@ -17,8 +18,11 @@ import { ReviewSchema } from 'src/admin/schema/products.schema';
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema },
       { name: 'Order', schema: OrderSchema },
+      { name: 'Favourite', schema: FavouriteSchema },
       { name: 'Contact', schema: ContactSchema },
       { name: 'Review', schema: ReviewSchema },
+      { name: 'Rating', schema: RatingSchema },
+      { name: 'Product', schema: ProductSchema },
     ]),
   ],
   controllers: [UsersController, MeController],

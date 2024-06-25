@@ -1,6 +1,6 @@
-import { Post, Body, Controller, UseGuards, Get, Param, Patch, NotFoundException, Query } from '@nestjs/common';
+import { Post, Body, Controller, UseGuards, Get, Param, Patch, NotFoundException, Query, Delete } from '@nestjs/common';
 import { MeService } from './me.service';
-import { CreateOrderDto, CreateReview } from './dto/user.dto';
+import { CreateOrderDto, CreateRating, CreateReview } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -20,10 +20,24 @@ export class MeController {
     }
 
     // add order
+    @Post('/addfavourite')
+    @UseGuards(JwtAuthGuard)
+    addFavourite(@Body() body: { productId: string, userId: string }){       
+        return this.meService.addProductToFavourite(body)
+    }
+
+    // add review
     @Post('/review')
     @UseGuards(JwtAuthGuard)
     createReview(@Body() body: CreateReview){       
         return this.meService.addReview(body)
+    }
+
+    // add rating
+    @Post('/rating')
+    @UseGuards(JwtAuthGuard)
+    createRating(@Body() body: CreateRating){       
+        return this.meService.addRating(body)
     }
 
     // get all orders for history
@@ -31,6 +45,20 @@ export class MeController {
     @UseGuards(JwtAuthGuard)
     getAllOrdersByEmail(@Param('email') email: string, @Query() query: Record<string, any>){     
         return this.meService.getAll(email, query)
+    }
+
+    // check if a product is saved to favourite
+    @Get('/checksavead')
+    @UseGuards(JwtAuthGuard)
+    checkSaved(@Query() query: Record<string, any>){     
+        return this.meService.checkSaved(query)
+    }
+
+    // get all product saved to favourite by a user
+    @Get('/getsavead/:userid')
+    @UseGuards(JwtAuthGuard)
+    getSaved(@Param('userid') userid: string, @Query() query: Record<string, any>){     
+        return this.meService.getSaved(userid, query)
     }
 
     // get order by id
@@ -59,5 +87,12 @@ export class MeController {
     @UseGuards(JwtAuthGuard)
     editPassword(@Param('id') id: string, @Body() body: UpdateUserDto){       
         return this.meService.editPassword(id, body)
+    }
+
+    // delete product saved to favourite
+    @Delete('addfavourite/:id')
+    @UseGuards(JwtAuthGuard)
+    deleteFavourite(@Param('id') id: string){       
+        return this.meService.deleteFavourite(id)
     }
 }
