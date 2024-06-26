@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Order } from './schema/order.schema';
+import { Order, SaveAddress } from './schema/order.schema';
 import mongoose, { Model } from 'mongoose';
 import { CreateOrderDto, CreateRating, CreateReview } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -31,12 +31,17 @@ export class MeService {
 
         @InjectModel(Favourite.name)
         private favouriteModel: Model<Favourite>,
+
+        @InjectModel(SaveAddress.name)
+        private saveAddressModel: Model<SaveAddress>,
     ){}
 
 
     // add order
     async addOrder(createOrderDto: CreateOrderDto) {
         try{
+            const { userId, state, address} = createOrderDto
+
             let orderId: string = 'order-'
             
             const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -47,6 +52,8 @@ export class MeService {
             }
 
             const order = await this.orderModel.create({ orderId, ...createOrderDto })
+            await this.saveAddressModel.create({ userId, state, address })
+            
             return { message: "order created", order }
 
         } catch (error: any) {
@@ -134,6 +141,16 @@ export class MeService {
     // get all users order using email
     async getAll(email: string, query: any) {
         return await paginate(this.orderModel, query, { email })
+    }
+
+    // get all users reviews using userid
+    async getAllUserReviews(userId: string, query: any) {
+        return await paginate(this.reviewModel, query, { userId, draft: true })
+    }
+
+    // get all users saved address using userid
+    async getAllSavedAddress(userId: string, query: any) {
+        return await paginate(this.saveAddressModel, query, { userId })
     }
 
 
@@ -273,6 +290,21 @@ export class MeService {
     }
 
     // edit user password
+    async editSavedReview(id: string, updateReviewDto: any) {
+        try{
+            let data = await this.reviewModel.findByIdAndUpdate(id, updateReviewDto, {
+                new: true,
+                runValidators: true
+            })
+            return { message: 'review added', data}
+
+        } catch (error: any) {
+            console.log('message', error);            
+            throw new InternalServerErrorException(`error processing request`);
+        }
+    }
+
+    // edit user password
     async editPassword(id: string, updateUserDto: UpdateUserDto) {
         try{
             const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
@@ -299,6 +331,12 @@ export class MeService {
     // delete product saved to favourite
     async deleteFavourite(id: string) {
         await this.favouriteModel.deleteOne({ _id: id })
+        return { message: 'record deleted'}
+    }
+
+    // delete product saved to favourite
+    async deleteSavedReview(id: string) {
+        await this.reviewModel.deleteOne({ _id: id })
         return { message: 'record deleted'}
     }
 

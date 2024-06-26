@@ -47,7 +47,13 @@ export class Review extends Document{
     productId: string
 
     @Prop()
+    userId: string
+
+    @Prop()
     review: string
+
+    @Prop({ required: false, default: false })
+    draft: boolean
 }
 
 @Schema({ timestamps: true })
@@ -55,6 +61,9 @@ export class Rating extends Document{
 
     @Prop()
     productId: string
+    
+    @Prop()
+    userId: string
 
     @Prop()
     rating: number

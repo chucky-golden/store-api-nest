@@ -7,6 +7,9 @@ import { Document } from 'mongoose'
 export class Order extends Document{ 
 
     @Prop()
+    userId: string
+
+    @Prop()
     orderId: string
 
     @Prop()
@@ -17,6 +20,9 @@ export class Order extends Document{
 
     @Prop()
     phone: string
+
+    @Prop()
+    state: string
 
     @Prop()
     address: string
@@ -37,4 +43,19 @@ export class Order extends Document{
     paid: number
 }
 
+
+@Schema({ timestamps: true })
+export class SaveAddress extends Document{ 
+
+    @Prop()
+    userId: string
+    
+    @Prop()
+    state: string
+    
+    @Prop()
+    address: string
+}
+
 export const OrderSchema = SchemaFactory.createForClass(Order)
+export const SaveAddressSchema = SchemaFactory.createForClass(SaveAddress)

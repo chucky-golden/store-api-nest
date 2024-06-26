@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schema/user.schema';
 import { SendMailService } from '../mailer';
-import { OrderSchema } from './schema/order.schema';
+import { OrderSchema, SaveAddressSchema } from './schema/order.schema';
 import { MeService } from './me.service';
 import { MeController } from './me.controller';
 import { AuthModule } from '../auth/auth.module';
@@ -23,6 +23,7 @@ import { FavouriteSchema } from './schema/favourite.schema';
       { name: 'Review', schema: ReviewSchema },
       { name: 'Rating', schema: RatingSchema },
       { name: 'Product', schema: ProductSchema },
+      { name: 'SaveAddress', schema: SaveAddressSchema },
     ]),
   ],
   controllers: [UsersController, MeController],

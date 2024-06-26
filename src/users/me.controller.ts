@@ -40,6 +40,20 @@ export class MeController {
         return this.meService.addRating(body)
     }
 
+    // get all reviews saved to draft
+    @Get('/reviews/:userid')
+    @UseGuards(JwtAuthGuard)
+    getAllUserDraftReviews(@Param('userid') userid: string, @Query() query: Record<string, any>){     
+        return this.meService.getAllUserReviews(userid, query)
+    }
+
+    // get all saved address
+    @Get('/savedaddress/:userid')
+    @UseGuards(JwtAuthGuard)
+    getAllSavedAddress(@Param('userid') userid: string, @Query() query: Record<string, any>){     
+        return this.meService.getAllSavedAddress(userid, query)
+    }
+
     // get all orders for history
     @Get('/orders/:email')
     @UseGuards(JwtAuthGuard)
@@ -94,5 +108,19 @@ export class MeController {
     @UseGuards(JwtAuthGuard)
     deleteFavourite(@Param('id') id: string){       
         return this.meService.deleteFavourite(id)
+    }
+
+    // edit user password
+    @Patch('savedreview/:id')
+    @UseGuards(JwtAuthGuard)
+    editSavedReview(@Param('id') id: string, @Body() body: any){       
+        return this.meService.editSavedReview(id, body)
+    }
+
+    // delete product saved to favourite
+    @Delete('savedreview/:id')
+    @UseGuards(JwtAuthGuard)
+    deleteSavedReview(@Param('id') id: string){       
+        return this.meService.deleteSavedReview(id)
     }
 }

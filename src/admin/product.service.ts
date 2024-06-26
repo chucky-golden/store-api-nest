@@ -80,25 +80,25 @@ export class ProductService {
     }
 
     // get single product review
-    async getProductReviews(query: any, _id: string){
-        const isValidId = mongoose.isValidObjectId(_id)
+    async getProductReviews(query: any, id: string){
+        const isValidId = mongoose.isValidObjectId(id)
 
         if(!isValidId){
             throw new BadRequestException('please enter a correct id')
         }
 
-        return await paginate(this.reviewModel, query, { _id });
+        return await paginate(this.reviewModel, query, { productId: id, draft: true });
     }
 
     // get single product rating
-    async getProductRating(query: any, _id: string){
-        const isValidId = mongoose.isValidObjectId(_id)
+    async getProductRating(query: any, id: string){
+        const isValidId = mongoose.isValidObjectId(id)
 
         if(!isValidId){
             throw new BadRequestException('please enter a correct id')
         }
 
-        return await paginate(this.ratingModel, query, { _id });
+        return await paginate(this.ratingModel, query, { productId: id });
     }
 
     // get single product review count

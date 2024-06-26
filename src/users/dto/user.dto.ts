@@ -52,6 +52,10 @@ export class CreateReview {
 
     @IsNotEmpty()
     @IsString()
+    readonly userId: string;
+
+    @IsNotEmpty()
+    @IsString()
     readonly review: string;
 }
 
@@ -61,6 +65,10 @@ export class CreateRating {
     @IsNotEmpty()
     @IsString()
     readonly productId: string;
+    
+    @IsNotEmpty()
+    @IsString()
+    readonly userId: string;
 
     @IsNotEmpty()
     @IsNumber()
@@ -69,6 +77,10 @@ export class CreateRating {
 
 
 export class CreateOrderDto {
+
+    @IsNotEmpty()
+    @IsString()
+    readonly userId: string;
 
     @IsNotEmpty()
     @IsString()
@@ -81,6 +93,10 @@ export class CreateOrderDto {
     @IsNotEmpty()
     @IsString()
     readonly phone: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly state: string;
 
     @IsNotEmpty()
     @IsString()
