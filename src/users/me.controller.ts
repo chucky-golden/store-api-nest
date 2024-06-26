@@ -103,7 +103,7 @@ export class MeController {
         return this.meService.editPassword(id, body)
     }
 
-    // delete product saved to favourite
+    // delete product saved to favourite by id
     @Delete('addfavourite/:id')
     @UseGuards(JwtAuthGuard)
     deleteFavourite(@Param('id') id: string){       
