@@ -70,8 +70,12 @@ export class UsersService {
             return { message: 'successful', user, token, otp: num }
 
         } catch (error: any) {
-            console.log('signing up ' + error);            
-            throw new InternalServerErrorException(`user cannot be created now`);
+            if (error instanceof UnauthorizedException && error.message === 'email already exist') {
+                throw error;
+            } else {
+                console.log('signing up ' + error);            
+                throw new InternalServerErrorException(`user cannot be created now`);
+            }
         }
     }
 
@@ -136,33 +140,43 @@ export class UsersService {
 
     // user login
     async login(loginDto: SigninDto): Promise<{ message: string, user: any, token: string }>{
+        try{
+            const { email, password } = loginDto
+
+            const user = await this.userModel.findOne({ email: email })
+
+            if(!user){
+                throw new UnauthorizedException('invalid email or password')
+            }
+
+            if(user.active !== 1){
+                throw new UnauthorizedException('account has been blocked')
+            }
+
+            if(user.emailVerified === false){
+                throw new UnauthorizedException('email not verified')
+            }
+
+            const isPasswordMatched = await bcrypt.compare(password, user.password)
+
+            if(!isPasswordMatched){
+                throw new UnauthorizedException('invalid email or password')
+            }
+
+            user.password = ''
+            const token = await this.authService.generateToken({ id: user._id, type: 'user' })
+
+            return { message: 'successful', user, token }
+
+        }catch(error: any){
+            if (error instanceof UnauthorizedException) {
+                throw error;
+            } else {
+                console.log('signing up ' + error);            
+                throw new InternalServerErrorException(`admin cannot be created now`);
+            }
+        }
         
-        const { email, password } = loginDto
-
-        const user = await this.userModel.findOne({ email: email })
-
-        if(!user){
-            throw new UnauthorizedException('invalid email or password')
-        }
-
-        if(user.active !== 1){
-            throw new UnauthorizedException('account has been blocked')
-        }
-
-        if(user.emailVerified === false){
-            throw new UnauthorizedException('email not verified')
-        }
-
-        const isPasswordMatched = await bcrypt.compare(password, user.password)
-
-        if(!isPasswordMatched){
-            throw new UnauthorizedException('invalid email or password')
-        }
-
-        user.password = ''
-        const token = await this.authService.generateToken({ id: user._id, type: 'user' })
-
-        return { message: 'successful', user, token }
     }
 
     // user forgot password
