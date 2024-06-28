@@ -120,7 +120,7 @@ export class UsersService {
             const check = await this.userModel.findOne({ email: signInDto.email })
 
             if(!check){
-                throw new InternalServerErrorException(`user user with specified email not found`);
+                throw new UnauthorizedException(`user user with specified email not found`);
             }
 
             if(check.active !== 1){
@@ -133,8 +133,12 @@ export class UsersService {
             return { message: 'successful', check, token }
 
         } catch (error: any) {
-            console.log('signing up ' + error);            
-            throw new InternalServerErrorException(`user cannot be created now`);
+            if (error instanceof UnauthorizedException) {
+                throw error;
+            } else {
+                console.log('signing up ' + error);            
+                throw new InternalServerErrorException(`admin cannot be created now`);
+            }
         }
     }
 
