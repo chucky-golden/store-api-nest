@@ -70,8 +70,12 @@ export class UsersService {
             return { message: 'successful', user, token, otp: num }
 
         } catch (error: any) {
-            console.log('signing up ' + error);            
-            throw error
+            if (error instanceof UnauthorizedException) {
+                throw error;
+            } else {
+                console.log('signing up ' + error);            
+                throw new InternalServerErrorException(`admin cannot be created now`);
+            }
         }
     }
 
