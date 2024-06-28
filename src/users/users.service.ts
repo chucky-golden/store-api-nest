@@ -139,7 +139,7 @@ export class UsersService {
     }
 
     // user login
-    async login(loginDto: SigninDto): Promise<{ message: string, user: any, token: string }>{
+    async login(loginDto: SigninDto){
         try{
             const { email, password } = loginDto
 
