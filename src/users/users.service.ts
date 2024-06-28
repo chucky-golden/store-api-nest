@@ -70,12 +70,8 @@ export class UsersService {
             return { message: 'successful', user, token, otp: num }
 
         } catch (error: any) {
-            if (error instanceof UnauthorizedException && error.message === 'email already exist') {
-                throw error;
-            } else {
-                console.log('signing up ' + error);            
-                throw new InternalServerErrorException(`user cannot be created now`);
-            }
+            console.log('signing up ' + error);            
+            throw error
         }
     }
 
