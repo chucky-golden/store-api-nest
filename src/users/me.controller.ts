@@ -19,7 +19,7 @@ export class MeController {
         return this.meService.addOrder(body)
     }
 
-    // add order
+    // add product to favourite
     @Post('/addfavourite')
     @UseGuards(JwtAuthGuard)
     addFavourite(@Body() body: { productId: string, userId: string }){       

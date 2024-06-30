@@ -74,6 +74,11 @@ export class MeService {
                 return { message: 'product already added', checkSaved };
             }
 
+            // Check if product and userId was sent
+            if (!productId && !userId) {
+                return { message: 'enter a valid productId and userId' };
+            }
+
             const order = await this.favouriteModel.create({ ...createFavouriteDto })
             return { message: "product added to favourite", order }
 
