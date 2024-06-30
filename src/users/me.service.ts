@@ -157,8 +157,6 @@ export class MeService {
     // get all product saved to favourite by a user
     async getSaved(userId: string, query: any) {
         try{
-            console.log(userId);
-            
             const isValidId = mongoose.isValidObjectId(userId)
 
             if(!isValidId){
