@@ -64,7 +64,7 @@ export class ProductController {
     }
 
     // get product review count by id
-    @Get('/productreviewscount/:productid')
+    @Get('/productratingcount/:productid')
     getProductByRatingCount(@Param('productid') id: string){
         return this.productService.getProductByRatingCount(id)
     }
