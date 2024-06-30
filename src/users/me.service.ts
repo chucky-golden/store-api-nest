@@ -188,7 +188,7 @@ export class MeService {
             }
 
             // Extract productIds from savedAds
-            const productIds: any = existingRecords.map((saveProduct: any) => saveProduct.serviceId);
+            const productIds: any = existingRecords.map((saveProduct: any) => saveProduct.productId);
 
             // Fetch product details for each productId
             const saved: any = await this.productModel.find({ _id: { $in: productIds } }).lean();
