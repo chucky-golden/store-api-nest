@@ -57,6 +57,10 @@ export class CreateReview {
     @IsNotEmpty()
     @IsString()
     readonly review: string;
+
+    @IsOptional()
+    @IsNumber()
+    readonly rating: number;
 }
 
 

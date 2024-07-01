@@ -52,6 +52,9 @@ export class Review extends Document{
     @Prop()
     review: string
 
+    @Prop({ required: false })
+    rating: number
+
     @Prop({ required: false, default: false })
     draft: boolean
 }

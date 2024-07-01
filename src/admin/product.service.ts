@@ -87,7 +87,7 @@ export class ProductService {
             throw new BadRequestException('please enter a correct id')
         }
 
-        return await paginate(this.reviewModel, query, { productId: id, draft: true });
+        return await paginate(this.reviewModel, query, { productId: id, draft: false });
     }
 
     // get single product rating
