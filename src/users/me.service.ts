@@ -335,13 +335,39 @@ export class MeService {
 
     // delete product saved to favourite
     async deleteFavourite(id: string) {
-        await this.favouriteModel.deleteOne({ _id: id })
+        // Check if the provided ID is a valid MongoDB ObjectId
+        const isValidId = mongoose.isValidObjectId(id);
+
+        if (!isValidId) {
+            throw new BadRequestException('Please enter a correct id');
+        }
+
+        const result = await this.favouriteModel.deleteOne({ _id: id })
+
+        // Check if the document was deleted (result.deletedCount will be 1 if deleted, 0 if not found)
+        if (result.deletedCount === 0) {
+            throw new NotFoundException('Favourite not found');
+        }
+
         return { message: 'record deleted'}
     }
 
     // delete product saved to favourite
     async deleteSavedReview(id: string) {
-        await this.reviewModel.deleteOne({ _id: id })
+        // Check if the provided ID is a valid MongoDB ObjectId
+        const isValidId = mongoose.isValidObjectId(id);
+
+        if (!isValidId) {
+            throw new BadRequestException('Please enter a correct id');
+        }
+
+        const result = await this.reviewModel.deleteOne({ _id: id })
+
+        // Check if the document was deleted (result.deletedCount will be 1 if deleted, 0 if not found)
+        if (result.deletedCount === 0) {
+            throw new NotFoundException('Favourite not found');
+        }
+        
         return { message: 'record deleted'}
     }
 
