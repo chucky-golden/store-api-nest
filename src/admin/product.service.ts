@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Category, Brand, Product, Review, Rating } from './schema/products.schema';
 import mongoose, { Model } from 'mongoose';
 import { paginate } from './common/pagination'
+import { User } from '../users/schema/user.schema';
 
 @Injectable()
 export class ProductService {
@@ -22,6 +23,9 @@ export class ProductService {
 
         @InjectModel(Rating.name)
         private ratingModel: Model<Rating>,
+
+        @InjectModel(User.name)
+        private userModel: Model<User>
     ){}
 
 
@@ -81,24 +85,89 @@ export class ProductService {
 
     // get single product review
     async getProductReviews(query: any, id: string){
-        const isValidId = mongoose.isValidObjectId(id)
+        const isValidId = mongoose.isValidObjectId(id);
 
-        if(!isValidId){
-            throw new BadRequestException('please enter a correct id')
+        if (!isValidId) {
+            throw new BadRequestException('Please enter a correct id');
         }
 
-        return await paginate(this.reviewModel, query, { productId: id, draft: false });
+        const resPerPage = 10;
+        const currentPage = Number(query.page) || 1;
+        const skip = resPerPage * (currentPage - 1);
+
+        const totalDocuments = await this.reviewModel.countDocuments({ productId: id, draft: false });
+        const reviews = await this.reviewModel.find({ productId: id, draft: false })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(resPerPage);
+
+        // Fetch user information for each review
+        const data = await Promise.all(reviews.map(async (review) => {
+            const user = await this.userModel.findById(review.userId, 'name'); // Fetch only the name field
+            return {
+                ...review.toObject(), // Convert Mongoose document to plain JS object
+                userName: user ? user.name : 'Unknown User'
+            };
+        }));
+
+        const totalPages = Math.ceil(totalDocuments / resPerPage);
+        const hasPreviousPage = currentPage > 1;
+        const hasNextPage = currentPage < totalPages;
+
+        return {
+            data,
+            totalDocuments,
+            hasPreviousPage,
+            previousPage: hasPreviousPage ? currentPage - 1 : null,
+            hasNextPage,
+            nextPage: hasNextPage ? currentPage + 1 : null,
+            totalPages,
+            currentPage
+        };
     }
 
     // get single product rating
     async getProductRating(query: any, id: string){
-        const isValidId = mongoose.isValidObjectId(id)
 
-        if(!isValidId){
-            throw new BadRequestException('please enter a correct id')
+        const isValidId = mongoose.isValidObjectId(id);
+
+        if (!isValidId) {
+            throw new BadRequestException('Please enter a correct id');
         }
 
-        return await paginate(this.ratingModel, query, { productId: id });
+        const resPerPage = 10;
+        const currentPage = Number(query.page) || 1;
+        const skip = resPerPage * (currentPage - 1);
+
+        const totalDocuments = await this.ratingModel.countDocuments({ productId: id });
+        const ratings = await this.ratingModel.find({ productId: id })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(resPerPage);
+
+        // Fetch user information for each review
+        const data = await Promise.all(ratings.map(async (review) => {
+            const user = await this.userModel.findById(review.userId, 'name'); // Fetch only the name field
+            return {
+                ...review.toObject(), // Convert Mongoose document to plain JS object
+                userName: user ? user.name : 'Unknown User'
+            };
+        }));
+
+        const totalPages = Math.ceil(totalDocuments / resPerPage);
+        const hasPreviousPage = currentPage > 1;
+        const hasNextPage = currentPage < totalPages;
+
+        return {
+            data,
+            totalDocuments,
+            hasPreviousPage,
+            previousPage: hasPreviousPage ? currentPage - 1 : null,
+            hasNextPage,
+            nextPage: hasNextPage ? currentPage + 1 : null,
+            totalPages,
+            currentPage
+        }
     }
 
     // get single product review count

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Order } from '../users/schema/order.schema';
 import { User } from '../users/schema/user.schema';
-import { paginate, PaginationResult } from './common/pagination'
+import { paginate } from './common/pagination'
 
 @Injectable()
 export class MyUsersService {
