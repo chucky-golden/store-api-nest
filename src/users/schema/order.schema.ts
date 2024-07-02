@@ -39,8 +39,8 @@ export class Order extends Document{
     @Prop()
     itemTotal: string
     
-    @Prop({ default: 0 })
-    paid: number
+    @Prop({ default: false })
+    paid: boolean
 }
 
 

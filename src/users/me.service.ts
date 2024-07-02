@@ -262,7 +262,7 @@ export class MeService {
         try{            
             const data = await this.orderModel.findOneAndUpdate(
                 { _id: id },
-                { $set: { paid: 1 } },
+                { $set: { paid: true } },
                 { new: true }
             );
 
