@@ -145,8 +145,6 @@ export class MeService {
 
     // get all users order using email
     async getAll(email: string, query: any) {
-        console.log('s', email);
-        
         return await paginate(this.orderModel, query, { email: email })
     }
 

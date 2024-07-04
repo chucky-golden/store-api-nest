@@ -58,8 +58,6 @@ export class MeController {
     @Get('/orders/:email')
     @UseGuards(JwtAuthGuard)
     getAllOrdersByEmail(@Param('email') email: string, @Query() query: Record<string, any>){
-        console.log(email);
-           
         return this.meService.getAll(email, query)
     }
 

@@ -14,10 +14,7 @@ export interface PaginationResult<T> {
 export async function paginate<T>(model: Model<T>, query: any, additionalFilter: Record<string, any> = {}): Promise<PaginationResult<T>> {
     const resPerPage = 10;
     const currentPage = Number(query.page) || 1;
-    const skip = resPerPage * (currentPage - 1);
-
-    console.log('a', additionalFilter);
-    
+    const skip = resPerPage * (currentPage - 1);    
 
     const totalDocuments = await model.countDocuments(additionalFilter);
     const data = await model.find(additionalFilter).sort({ createdAt: -1 }).skip(skip).limit(resPerPage);
