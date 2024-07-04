@@ -57,7 +57,9 @@ export class MeController {
     // get all orders for history
     @Get('/orders/:email')
     @UseGuards(JwtAuthGuard)
-    getAllOrdersByEmail(@Param('email') email: string, @Query() query: Record<string, any>){     
+    getAllOrdersByEmail(@Param('email') email: string, @Query() query: Record<string, any>){
+        console.log(email);
+           
         return this.meService.getAll(email, query)
     }
 

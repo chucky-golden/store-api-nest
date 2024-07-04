@@ -16,6 +16,9 @@ export async function paginate<T>(model: Model<T>, query: any, additionalFilter:
     const currentPage = Number(query.page) || 1;
     const skip = resPerPage * (currentPage - 1);
 
+    console.log('a', additionalFilter);
+    
+
     const totalDocuments = await model.countDocuments(additionalFilter);
     const data = await model.find(additionalFilter).sort({ createdAt: -1 }).skip(skip).limit(resPerPage);
 
