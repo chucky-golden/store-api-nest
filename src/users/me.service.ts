@@ -147,17 +147,17 @@ export class MeService {
     async getAll(email: string, query: any) {
         console.log('s', email);
         
-        return await paginate(this.orderModel, query, { email })
+        return await paginate(this.orderModel, query, { email: email })
     }
 
     // get all users reviews using userid
     async getAllUserReviews(userId: string, query: any) {
-        return await paginate(this.reviewModel, query, { userId, draft: true })
+        return await paginate(this.reviewModel, query, { userId: userId, draft: true })
     }
 
     // get all users saved address using userid
     async getAllSavedAddress(userId: string, query: any) {
-        return await paginate(this.saveAddressModel, query, { userId })
+        return await paginate(this.saveAddressModel, query, { userId: userId })
     }
 
 
