@@ -96,21 +96,19 @@ export class AdminService {
 
     // admin reset password
     async passwordReset(body: { email: string, password: string }) {
-        const { email, password } = body
+        const { email, password } = body;
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const admin:any  = await this.adminModel.updateOne({ email }, 
-            {
-                $set:{
-                    password:hashedPassword
-                }
-            }
-        )
+        const updateResult: any = await this.adminModel.updateOne(
+            { email }, 
+            { $set: { password: hashedPassword } },
+            { runValidators: true }
+        );
 
-        if(admin !== null){
-            return { message: "success", email }
-        }else{
-            return { message: "error", email }
+        if (updateResult.nModified > 0) {
+            return { message: "Password reset successful", email };
+        } else {
+            return { message: "Error resetting password", email };
         }
     }
 }
