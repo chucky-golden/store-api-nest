@@ -224,7 +224,14 @@ export class UsersService {
 
     // user reset password
     async passwordReset(body: { email: string, password: string }) {
+
         const { email, password } = body;
+        const user = await this.userModel.findOne({ email });
+
+        if (!user) {
+            return { message: "Email not found", email };
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const updateResult: any = await this.userModel.updateOne(

@@ -97,6 +97,12 @@ export class AdminService {
     // admin reset password
     async passwordReset(body: { email: string, password: string }) {
         const { email, password } = body;
+        const user = await this.adminModel.findOne({ email });
+
+        if (!user) {
+            return { message: "Email not found", email };
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const updateResult: any = await this.adminModel.updateOne(
