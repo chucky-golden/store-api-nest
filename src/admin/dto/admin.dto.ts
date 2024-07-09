@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 
 export class SignupDto {
@@ -47,5 +47,11 @@ export class ProductDto {
     @IsString()
     readonly description: string;
 
-    
+    @IsNotEmpty()
+    @IsArray()
+    readonly specifications: string;
+
+    @IsNotEmpty()
+    @IsArray()
+    readonly features: string;
 }

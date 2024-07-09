@@ -37,6 +37,12 @@ export class Product extends Document{
     description: string
 
     @Prop()
+    specifications: []
+
+    @Prop()
+    features: []
+
+    @Prop()
     uploadUrl: []
 }
 

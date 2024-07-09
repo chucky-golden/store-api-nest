@@ -224,25 +224,19 @@ export class UsersService {
 
     // user reset password
     async passwordReset(body: { email: string, password: string }) {
-        const { email, password } = body
+        const { email, password } = body;
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user:any  = await this.userModel.updateOne({ email }, 
-            {
-                $set:{
-                    password: hashedPassword
-                }
-            },
-            { 
-                new: true, 
-                runValidators: true 
-            }
-        )
+        const updateResult: any = await this.userModel.updateOne(
+            { email }, 
+            { $set: { password: hashedPassword } },
+            { runValidators: true }
+        );
 
-        if(user !== null){
-            return { message: "success", email }
-        }else{
-            return { message: "error", email }
+        if (updateResult.nModified > 0) {
+            return { message: "Password reset successful", email };
+        } else {
+            return { message: "Error resetting password", email };
         }
     }
 
