@@ -216,7 +216,7 @@ export class UsersService {
         // send mail
         const sent = await sendmail(email, 'Password Recovery', emailBody);
         if(sent === true){
-            return { message: 'email sent', email}
+            return { message: 'email sent', email, otp: num }
         }else{
             throw new BadRequestException('error sending mail')
         }
