@@ -25,7 +25,16 @@ export class Product extends Document{
     name: string
 
     @Prop()
-    price: string
+    regularPrice: string
+
+    @Prop()
+    salePrice: string
+
+    @Prop()
+    sku: string
+
+    @Prop()
+    quantity: number
 
     @Prop()
     category: string
@@ -41,6 +50,9 @@ export class Product extends Document{
 
     @Prop()
     features: []
+
+    @Prop()
+    tags: []
 
     @Prop()
     uploadUrl: []

@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 
 export class SignupDto {
@@ -33,7 +33,19 @@ export class ProductDto {
 
     @IsNotEmpty()
     @IsString()
-    readonly price: string;
+    readonly regularPrice: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly salePrice: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly sku: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly quantity: string;
 
     @IsNotEmpty()
     @IsString()
@@ -49,9 +61,13 @@ export class ProductDto {
 
     @IsNotEmpty()
     @IsArray()
-    readonly specifications: string;
+    readonly specifications: [];
 
     @IsNotEmpty()
     @IsArray()
-    readonly features: string;
+    readonly features: [];
+
+    @IsNotEmpty()
+    @IsArray()
+    readonly tags: [];
 }
