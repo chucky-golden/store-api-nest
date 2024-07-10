@@ -45,7 +45,7 @@ export class ProductDto {
 
     @IsNotEmpty()
     @IsNumber()
-    readonly quantity: string;
+    readonly quantity: number;
 
     @IsNotEmpty()
     @IsString()
@@ -61,13 +61,13 @@ export class ProductDto {
 
     @IsNotEmpty()
     @IsArray()
-    readonly specifications: [];
+    readonly specifications: string[];
 
     @IsNotEmpty()
     @IsArray()
-    readonly features: [];
+    readonly features: string[];
 
     @IsNotEmpty()
     @IsArray()
-    readonly tags: [];
+    readonly tags: string[];
 }
