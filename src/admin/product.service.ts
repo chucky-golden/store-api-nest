@@ -88,7 +88,7 @@ export class ProductService {
 
             // Fetch user information for each review
             const data = await Promise.all(products.map(async (product) => {
-                const ratingCount = await this.getProductByRatingCount(product._id) // Fetch only the name field
+                const ratingCount = await this.getProductByRatingCount(product._id) // Fetch rating count
                 return {
                     ...product.toObject(), // Convert Mongoose document to plain JS object
                     ratingCount
@@ -110,7 +110,7 @@ export class ProductService {
                 totalPages,
                 currentPage
             };
-            
+
         } else {
             throw new NotFoundException('Invalid type');
         }
@@ -270,10 +270,12 @@ export class ProductService {
 
             }else if(type === 'product'){
                 let data: any = await this.productModel.findOne({ _id: id })
+                const ratingCount = await this.getProductByRatingCount(id)
                 let similarProduct = await this.productModel.find({ category: data.category, brand: data.brand }).limit(10)
                 let newData = {
                     'product': data,
-                    'similarProducts': similarProduct
+                    'similarProducts': similarProduct,
+                    ratingCount
                 }
                 fetchData = newData
             }else{
