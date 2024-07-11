@@ -117,20 +117,20 @@ export class UsersService {
     async thirdPartyLogin(signInDto: any) {
         try {
 
-            const check = await this.userModel.findOne({ email: signInDto.email })
+            const user = await this.userModel.findOne({ email: signInDto.email })
 
-            if(!check){
+            if(!user){
                 throw new UnauthorizedException(`user user with specified email not found`);
             }
 
-            if(check.active !== 1){
+            if(user.active !== 1){
                 throw new UnauthorizedException('account has been blocked')
             }
 
-            check.password = ''
-            const token = await this.authService.generateToken({ id: check._id, type: 'user' })
+            user.password = ''
+            const token = await this.authService.generateToken({ id: user._id, type: 'user' })
 
-            return { message: 'successful', check, token }
+            return { message: 'successful', user, token }
 
         } catch (error: any) {
             if (error instanceof UnauthorizedException) {
