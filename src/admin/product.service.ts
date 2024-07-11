@@ -75,7 +75,42 @@ export class ProductService {
         } else if (query.type === 'brand') {
             result = await paginate(this.brandModel, query);
         } else if (query.type === 'product') {
-            result = await paginate(this.productModel, query);
+
+            const resPerPage = 10;
+            const currentPage = Number(query.page) || 1;
+            const skip = resPerPage * (currentPage - 1);
+
+            const totalDocuments = await this.productModel.countDocuments();
+            const products = await this.productModel.find()
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(resPerPage);
+
+            // Fetch user information for each review
+            const data = await Promise.all(products.map(async (product) => {
+                const ratingCount = await this.getProductByRatingCount(product._id) // Fetch only the name field
+                return {
+                    ...product.toObject(), // Convert Mongoose document to plain JS object
+                    ratingCount
+                };
+            }));
+
+
+            const totalPages = Math.ceil(totalDocuments / resPerPage);
+            const hasPreviousPage = currentPage > 1;
+            const hasNextPage = currentPage < totalPages;
+
+            return {
+                data,
+                totalDocuments,
+                hasPreviousPage,
+                previousPage: hasPreviousPage ? currentPage - 1 : null,
+                hasNextPage,
+                nextPage: hasNextPage ? currentPage + 1 : null,
+                totalPages,
+                currentPage
+            };
+            
         } else {
             throw new NotFoundException('Invalid type');
         }
