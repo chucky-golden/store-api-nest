@@ -33,11 +33,7 @@ export class ProductDto {
 
     @IsNotEmpty()
     @IsString()
-    readonly regularPrice: string;
-
-    @IsNotEmpty()
-    @IsString()
-    readonly salePrice: string;
+    readonly price: string;
 
     @IsNotEmpty()
     @IsString()

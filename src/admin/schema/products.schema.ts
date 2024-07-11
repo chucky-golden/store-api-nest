@@ -25,10 +25,7 @@ export class Product extends Document{
     name: string
 
     @Prop()
-    regularPrice: string
-
-    @Prop()
-    salePrice: string
+    price: string
 
     @Prop()
     sku: string
