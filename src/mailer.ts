@@ -29,20 +29,31 @@ export class SendMailService {
         });
     }
 
+    generateOtp(){
+        let num: string = ""
+        for(let i = 0; i < 6; i++){ 
+            num += Math.floor(Math.random() * (9 - 0 + 1)) + 0;
+        }
+        return num
+    }
+
     async generateMail(email: string) {
-        const emailSender = {
+        let num = this.generateOtp()
+        var emailSender: any = {
             body: {
-                name: 'Churchill Expansions',
-                intro: 'We got a request to reset your password, if this was you, click the link below to reset password or ignore and nothing will happen to your account.',
+                name: 'User',
+                intro: 'We got a request to reset your password, if this was you, enter the otp in the next page to reset password or ignore and nothing will happen to your account',
+
                 action: {
-                    instructions: 'To get started, please click here:',
+                    instructions: 'To get started, enter the OTP in the app window',
                     button: {
-                        color: '#22BC66',
-                        text: 'Recover Password',
-                        link: 'https://www.churchillexpansions.com/passwordreset?email=' + email
+                        color: '#ffffff',
+                        text: `<span style="font-size: 30px; font-weight: bolder; color: black">${num}</span>`,
+                        link: ''
                     }
                 },
-                outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.\n\n Team Hardware Mall.'
+                
+                outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.\n\n Team Churchil.'
             }
         };
 
