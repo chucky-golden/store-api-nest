@@ -313,13 +313,11 @@ export class ProductService {
                 )
 
             }else if(dataDto.type === 'category'){
-                await this.categoryModel.updateOne({ _id: dataDto.id }, 
-                    {
-                        $set:{
-                            name: dataDto.name
-                        }
-                    }
+                await this.categoryModel.findOneAndUpdate({ _id: dataDto.id }, 
+                    { $set: dataDto },
+                    { new: true }
                 )
+                
             }else{
                 throw new BadRequestException('invalid entry')
             }
