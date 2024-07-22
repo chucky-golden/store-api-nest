@@ -7,6 +7,9 @@ export class Category extends Document{
 
     @Prop({ unique: [true, 'Duplicate category entered'] })
     name: string
+    
+    @Prop()
+    image: string
 }
 
 

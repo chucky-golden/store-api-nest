@@ -30,7 +30,7 @@ export class ProductService {
 
 
     // add category / brand
-    async addData(dataDto: { name: string, type: string }) {
+    async addData(dataDto: { name: string, type: string, image?: string }) {
         try{
             if(dataDto.type === 'brand'){
                 const brand = await this.brandModel.create(dataDto)

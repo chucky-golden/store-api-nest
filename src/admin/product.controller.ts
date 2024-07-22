@@ -1,5 +1,5 @@
-import { Post, Body, Controller, UseGuards, Get, Query, UploadedFiles, UseInterceptors, BadRequestException, Param, Patch, Delete } from '@nestjs/common';
-import { FilesInterceptor  } from '@nestjs/platform-express';
+import { Post, Body, Controller, UseGuards, Get, Query, UploadedFiles, UseInterceptors, BadRequestException, Param, Patch, Delete, UploadedFile } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor  } from '@nestjs/platform-express';
 import { ProductDto } from './dto/admin.dto';
 import { ProductService } from './product.service';
 import { UploadService } from './common/cloudinary';
@@ -18,11 +18,11 @@ export class ProductController {
     // add category/brand
     @Post('/data')
     @UseGuards(JwtAuthGuard)
-    createData(@Body() body: { name: string, type: string }){       
+    createData(@Body() body: { name: string, type: string, image?: string }){       
         return this.productService.addData(body)
     }
 
-    // upload products img
+    // upload multipl products img
     @Post('/getproductimg')
     @UseInterceptors(FilesInterceptor('files'))
     @UseGuards(JwtAuthGuard)
@@ -34,6 +34,21 @@ export class ProductController {
             throw new BadRequestException('error uploading product files')
         }
 
+        return data
+    }
+
+    // upload single img
+    @Post('/getimg')
+    @UseInterceptors(FileInterceptor('file'))
+    @UseGuards(JwtAuthGuard)
+    async getImg(@UploadedFile() file: Express.Multer.File){  
+         
+        let data: any = await this.uploadService.generateUploadURL(file)
+        
+        if(data === null){
+            throw new BadRequestException('error uploading product files')
+        }
+        
         return data
     }
 
