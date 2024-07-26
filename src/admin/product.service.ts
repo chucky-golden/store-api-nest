@@ -286,6 +286,9 @@ export class ProductService {
         } catch (error: any) {
             if (error instanceof NotFoundException && error.message === 'id not found') {
                 throw error;
+            } 
+            else if(error instanceof BadRequestException){
+                throw error;
             } else {
                 console.log('data error ' + error);            
                 throw new InternalServerErrorException(`error processing request`);
