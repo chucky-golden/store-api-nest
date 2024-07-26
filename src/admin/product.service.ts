@@ -346,7 +346,7 @@ export class ProductService {
         }
         
         try{
-            let product = await this.brandModel.findOneAndUpdate({ _id: dataDto.id }, 
+            let product = await this.productModel.findOneAndUpdate({ _id: dataDto.id }, 
                 { $set: dataDto },
                 { new: true }
             )
@@ -358,7 +358,7 @@ export class ProductService {
             return { message: "update successful", product }
 
         } catch (error: any) {
-            if (error instanceof BadRequestException && error.message === 'update error') {
+            if (error instanceof BadRequestException) {
                 throw error;
             } else {
                 console.log('data error ' + error);            
