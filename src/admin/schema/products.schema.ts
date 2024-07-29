@@ -30,7 +30,7 @@ export class Product extends Document{
     @Prop()
     price: string
 
-    @Prop()
+    @Prop({ required: false })
     sku: string
 
     @Prop()
@@ -44,6 +44,9 @@ export class Product extends Document{
 
     @Prop()
     description: string
+
+    @Prop({ required: false })
+    colors: []
 
     @Prop()
     specifications: []
