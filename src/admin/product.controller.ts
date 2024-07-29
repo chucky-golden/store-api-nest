@@ -105,7 +105,7 @@ export class ProductController {
     // edit category
     @Patch('/editdata')
     @UseGuards(JwtAuthGuard)
-    editData(@Body() body: { id: string, name: string, type: string }){       
+    editData(@Body() body: { id: string, name: string, type: string, image?: string }){       
         return this.productService.editData(body)
     }
 
