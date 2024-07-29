@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Order } from '../users/schema/order.schema';
 import { User } from '../users/schema/user.schema';
-import { paginate } from './common/pagination'
+// import { paginate } from './common/pagination'
 
 @Injectable()
 export class MyUsersService {
@@ -22,9 +22,15 @@ export class MyUsersService {
         let result;
 
         if(query.type === 'orders'){
-            result = await paginate(this.orderModel, query);
+            const data = await this.orderModel.find().sort({ createdAt: -1 })
+            return {
+                data
+            };
         }else if(query.type === 'users'){
-            result = await paginate(this.userModel, query);
+            const data = await this.userModel.find().sort({ createdAt: -1 })
+            return {
+                data
+            };            
         }else{
             throw new NotFoundException('invalid data (type parameter not specified)')
         }
