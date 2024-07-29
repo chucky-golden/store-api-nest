@@ -298,7 +298,7 @@ export class ProductService {
 
 
     // edit category / brand
-    async editData(dataDto: { id: string, name: string, type: string }) {
+    async editData(dataDto: { id: string, name: string, type: string, image?: string }) {
         const isValidId = mongoose.isValidObjectId(dataDto.id)
 
         if(!isValidId){
