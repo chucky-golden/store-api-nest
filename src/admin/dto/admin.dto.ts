@@ -58,7 +58,7 @@ export class ProductDto {
     @IsArray()
     readonly specifications: string[];
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     readonly colors: string[];
 
