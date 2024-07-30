@@ -30,7 +30,7 @@ export class ProductService {
     
     // get all product/brand/category
     async updateCat() {
-        const updateResult = await await this.brandModel.updateMany(
+        const updateResult = await await this.categoryModel.updateMany(
             {},
             { $set: { brands: [] } }
         );
