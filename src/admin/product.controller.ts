@@ -15,12 +15,6 @@ export class ProductController {
         private readonly uploadService: UploadService
     ) {}
 
-    // get all products, brand or category depending on query
-    @Get('/test')
-    updateCat() {
-        return this.productService.updateCat();
-    }
-
     // add category/brand
     @Post('/data')
     @UseGuards(JwtAuthGuard)

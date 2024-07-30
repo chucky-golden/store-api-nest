@@ -27,16 +27,6 @@ export class ProductService {
         private userModel: Model<User>
     ){}
 
-    
-    // get all product/brand/category
-    async updateCat() {
-        const updateResult = await await this.categoryModel.updateMany(
-            {},
-            { $set: { brands: [] } }
-        );
-        return { message: "brand added", updateResult }
-    }
-
     // add category / brand
     async addData(dataDto: { name: string, type: string, image?: string, brands?: [] }) {
         try{
