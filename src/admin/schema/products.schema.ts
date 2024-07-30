@@ -10,6 +10,9 @@ export class Category extends Document{
     
     @Prop()
     image: string
+
+    @Prop()
+    brands: []
 }
 
 

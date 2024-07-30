@@ -15,10 +15,16 @@ export class ProductController {
         private readonly uploadService: UploadService
     ) {}
 
+    // get all products, brand or category depending on query
+    @Get('/test')
+    updateCat() {
+        return this.productService.updateCat();
+    }
+
     // add category/brand
     @Post('/data')
     @UseGuards(JwtAuthGuard)
-    createData(@Body() body: { name: string, type: string, image?: string }){       
+    createData(@Body() body: { name: string, type: string, image?: string, brands?: [] }){       
         return this.productService.addData(body)
     }
 
@@ -61,7 +67,7 @@ export class ProductController {
     }
 
     // get all products, brand or category depending on query
-   @Get()
+    @Get()
     getAllElements(@Query() query: Record<string, any>) {
         return this.productService.getAll(query);
     }
