@@ -154,10 +154,25 @@ export class MeService {
     }
 
     // get all users saved address using userid
+    async getTopSelling() {
+        try {
+            const data = await this.productModel.find()
+                .sort({ sellingCount: -1 })
+                .limit(20);
+    
+            return {
+                data
+            };
+        } catch (error: any) {
+            console.log('message', error);
+            throw new InternalServerErrorException('Error fetching top selling products');
+        }
+    }
+
+    // get all users saved address using userid
     async getAllSavedAddress(userId: string, query: any) {
         return await paginate(this.saveAddressModel, query, { userId: userId })
     }
-
 
     // get all product saved to favourite by a user
     async getSaved(userId: string, query: any) {
@@ -247,6 +262,25 @@ export class MeService {
         }
 
         return order
+    }
+
+
+    // get arrays from frontend and update product selling count.
+    async updateCount(datas: string) {
+        try{         
+            for (const productId of datas) {
+                await this.productModel.updateOne(
+                    { _id: productId },
+                    { $inc: { sellingCount: 1 } }
+                );
+            }
+
+            return { message: 'product sellingCount updated'}
+
+        } catch (error: any) {
+            console.log('message', error);            
+            throw new InternalServerErrorException(`error processing request`);
+        }
     }
 
 

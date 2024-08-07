@@ -40,6 +40,20 @@ export class MeController {
         return this.meService.addRating(body)
     }
 
+    // get arrays from frontend and update product selling count.
+    @Post('/updatecount')
+    @UseGuards(JwtAuthGuard)
+    updateCount(@Body() body: any){       
+        return this.meService.updateCount(body)
+    }
+
+    // get top selling
+    @Get('/topselling')
+    @UseGuards(JwtAuthGuard)
+    getTopSelling(){     
+        return this.meService.getTopSelling()
+    }
+
     // get all reviews saved to draft
     @Get('/reviews/:userid')
     @UseGuards(JwtAuthGuard)

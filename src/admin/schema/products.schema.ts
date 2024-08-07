@@ -62,6 +62,9 @@ export class Product extends Document{
 
     @Prop()
     uploadUrl: []
+
+    @Prop({ required: false, default: 0 })
+    sellingCount: number
 }
 
 @Schema({ timestamps: true })
