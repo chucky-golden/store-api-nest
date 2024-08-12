@@ -124,14 +124,14 @@ export class MeController {
         return this.meService.deleteFavourite(id)
     }
 
-    // edit user password
+    // edit saved Review
     @Patch('savedreview/:id')
     @UseGuards(JwtAuthGuard)
     editSavedReview(@Param('id') id: string, @Body() body: any){       
         return this.meService.editSavedReview(id, body)
     }
 
-    // delete product saved to favourite
+    // delete saved review
     @Delete('savedreview/:id')
     @UseGuards(JwtAuthGuard)
     deleteSavedReview(@Param('id') id: string){       

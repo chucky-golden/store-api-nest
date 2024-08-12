@@ -63,23 +63,25 @@ export class MeService {
     }
 
 
-    // add order
+    // add product to favourite
     async addProductToFavourite(createFavouriteDto: { productId: string, userId: string }) {
         try{
-            const { productId, userId } = createFavouriteDto
-            const checkSaved = await this.favouriteModel.find({ productId, userId })
+            const { productId, userId } = createFavouriteDto;
+
+            // Validate that both productId and userId are provided
+            if (!productId || !userId) {
+                return { message: 'Enter a valid productId and userId' };
+            }
+
+            // Check if the product is already in the user's favourites
+            const checkSaved = await this.favouriteModel.findOne({ productId, userId });
 
             // Check if any favourite product were found
-            if (checkSaved.length !== 0) {
+            if (checkSaved) {
                 return { message: 'product already added', checkSaved };
             }
 
-            // Check if product and userId was sent
-            if (!productId && !userId) {
-                return { message: 'enter a valid productId and userId' };
-            }
-
-            const order = await this.favouriteModel.create({ ...createFavouriteDto })
+            const order = await this.favouriteModel.create(createFavouriteDto)
             return { message: "product added to favourite", order }
 
         } catch (error: any) {
@@ -371,38 +373,34 @@ export class MeService {
     async deleteFavourite(id: string) {
         // Check if the provided ID is a valid MongoDB ObjectId
         const isValidId = mongoose.isValidObjectId(id);
-
         if (!isValidId) {
-            throw new BadRequestException('Please enter a correct id');
+            throw new BadRequestException('Please enter a correct ID');
         }
 
-        const result = await this.favouriteModel.deleteOne({ _id: id })
+        const result = await this.favouriteModel.findByIdAndDelete(id);
 
-        // Check if the document was deleted (result.deletedCount will be 1 if deleted, 0 if not found)
-        if (result.deletedCount === 0) {
+        if (!result) {
             throw new NotFoundException('Favourite not found');
         }
 
-        return { message: 'record deleted'}
+        return { message: 'record deleted successfully'}
     }
 
     // delete product saved to favourite
     async deleteSavedReview(id: string) {
         // Check if the provided ID is a valid MongoDB ObjectId
         const isValidId = mongoose.isValidObjectId(id);
-
         if (!isValidId) {
-            throw new BadRequestException('Please enter a correct id');
+            throw new BadRequestException('Please enter a correct ID');
         }
 
-        const result = await this.reviewModel.deleteOne({ _id: id })
+        const result = await this.reviewModel.findByIdAndDelete(id);
 
-        // Check if the document was deleted (result.deletedCount will be 1 if deleted, 0 if not found)
-        if (result.deletedCount === 0) {
+        if (!result) {
             throw new NotFoundException('Favourite not found');
         }
-        
-        return { message: 'record deleted'}
+
+        return { message: 'record deleted successfully'}
     }
 
 }
