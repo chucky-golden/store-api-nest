@@ -100,11 +100,23 @@ export class CreateOrderDto {
 
     @IsNotEmpty()
     @IsString()
-    readonly state: string;
+    readonly country: string;
 
     @IsNotEmpty()
     @IsString()
-    readonly address: string;
+    readonly city: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly lga: string;
+
+    @IsOptional()
+    @IsString()
+    readonly landmark: string;
+    
+    @IsOptional()
+    @IsString()
+    readonly additionalNote: string;
 
     @IsNotEmpty()
     @IsString()

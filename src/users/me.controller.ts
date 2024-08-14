@@ -20,6 +20,13 @@ export class MeController {
     }
 
     // add product to favourite
+    @Post('/addsavedaddress')
+    @UseGuards(JwtAuthGuard)
+    addSavedAddress(@Body() body: any){       
+        return this.meService.addSavedAddress(body)
+    }
+
+    // add product to favourite
     @Post('/addfavourite')
     @UseGuards(JwtAuthGuard)
     addFavourite(@Body() body: { productId: string, userId: string }){       

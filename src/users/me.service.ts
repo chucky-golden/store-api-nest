@@ -40,7 +40,7 @@ export class MeService {
     // add order
     async addOrder(createOrderDto: CreateOrderDto) {
         try{
-            const { userId, state, address} = createOrderDto
+            const { userId, country, city, lga, landmark = '', additionalNote = ''} = createOrderDto
 
             let orderId: string = 'order-'
             
@@ -52,7 +52,7 @@ export class MeService {
             }
 
             const order = await this.orderModel.create({ orderId, ...createOrderDto })
-            await this.saveAddressModel.create({ userId, state, address })
+            await this.saveAddressModel.create({ userId, country, city, lga, landmark, additionalNote })
             
             return { message: "order created", order }
 
@@ -87,6 +87,19 @@ export class MeService {
         } catch (error: any) {
             console.log('data error ' + error);            
             throw new InternalServerErrorException(`product cannot be added now`);  
+        }
+    }
+
+
+    // add saved address
+    async addSavedAddress(savedAddress: any) {
+        try{
+            const address = await this.saveAddressModel.create({ ...savedAddress })
+            return { message: "address added", address }
+
+        } catch (error: any) {
+            console.log('data error ' + error);            
+            throw new InternalServerErrorException(`address cannot be added now`);  
         }
     }
 

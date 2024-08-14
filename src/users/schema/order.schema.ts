@@ -22,10 +22,19 @@ export class Order extends Document{
     phone: string
 
     @Prop()
-    state: string
-
+    country: string
+    
     @Prop()
-    address: string
+    city: string
+    
+    @Prop()
+    lga: string
+    
+    @Prop()
+    landmark: string
+    
+    @Prop()
+    additionalNote: string
 
     @Prop()
     amount: string
@@ -51,10 +60,19 @@ export class SaveAddress extends Document{
     userId: string
     
     @Prop()
-    state: string
+    country: string
     
     @Prop()
-    address: string
+    city: string
+    
+    @Prop()
+    lga: string
+    
+    @Prop()
+    landmark: string
+    
+    @Prop()
+    additionalNote: string
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order)
