@@ -108,6 +108,10 @@ export class CreateOrderDto {
 
     @IsNotEmpty()
     @IsString()
+    readonly address: string;
+
+    @IsNotEmpty()
+    @IsString()
     readonly lga: string;
 
     @IsOptional()

@@ -40,7 +40,7 @@ export class MeService {
     // add order
     async addOrder(createOrderDto: CreateOrderDto) {
         try{
-            const { userId, country, city, lga, landmark = '', additionalNote = ''} = createOrderDto
+            const { userId, phone, country, city, address, lga, landmark = '', additionalNote = ''} = createOrderDto
 
             let orderId: string = 'order-'
             
@@ -52,7 +52,7 @@ export class MeService {
             }
 
             const order = await this.orderModel.create({ orderId, ...createOrderDto })
-            await this.saveAddressModel.create({ userId, country, city, lga, landmark, additionalNote })
+            await this.saveAddressModel.create({ userId, phone, country, city, address, lga, landmark, additionalNote })
             
             return { message: "order created", order }
 

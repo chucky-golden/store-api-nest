@@ -23,9 +23,12 @@ export class Order extends Document{
 
     @Prop()
     country: string
-    
+
     @Prop()
     city: string
+    
+    @Prop()
+    address: string
     
     @Prop()
     lga: string
@@ -58,12 +61,18 @@ export class SaveAddress extends Document{
 
     @Prop()
     userId: string
+
+    @Prop()
+    phone: string
     
     @Prop()
     country: string
     
     @Prop()
     city: string
+    
+    @Prop()
+    address: string
     
     @Prop()
     lga: string
