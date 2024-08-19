@@ -186,7 +186,8 @@ export class MeService {
 
     // get all users saved address using userid
     async getAllSavedAddress(userId: string, query: any) {
-        return await paginate(this.saveAddressModel, query, { userId: userId })
+        const data = await this.saveAddressModel.find({ userId })
+        return { data }
     }
 
     // get all product saved to favourite by a user
