@@ -199,7 +199,7 @@ export class ProductService {
         }
 
         // Aggregate ratings count and sum of ratings for the specified userId
-        const ratingData = await this.ratingModel.aggregate([
+        const ratingData = await this.reviewModel.aggregate([
             { $match: { productId: _id } },
             {
                 $group: {
