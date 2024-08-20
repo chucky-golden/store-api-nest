@@ -22,6 +22,7 @@ export class SendMailService {
         this.transporter = nodemailer.createTransport({
             host: 'mail.Churchil.com',
             port: 465,
+            secure: true,
             auth: {
                 user: 'support@Churchil.com',
                 pass: 'Churchil2024'

@@ -26,6 +26,7 @@ export const sendmail = (to: string, subject: string, message: string): Promise<
         const transporter = nodemailer.createTransport({
             host: HOST,
             port: PORT,
+            secure: true,
             auth: {
             user: USER,
             pass: PASS
