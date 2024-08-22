@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Category, Brand, Product, Review, Rating } from './schema/products.schema';
+import { Category, Brand, Product, Review, Rating, Flyer } from './schema/products.schema';
 import mongoose, { Model } from 'mongoose';
 import { User } from '../users/schema/user.schema';
 
@@ -24,7 +24,10 @@ export class ProductService {
         private ratingModel: Model<Rating>,
 
         @InjectModel(User.name)
-        private userModel: Model<User>
+        private userModel: Model<User>,
+
+        @InjectModel(User.name)
+        private flyerModel: Model<Flyer>
     ){}
 
     // add category / brand
@@ -50,6 +53,20 @@ export class ProductService {
         }
     }
 
+    // add flyer
+    async addFlyer(flyerDto: any) {       
+        
+        try{
+            const flyer = await this.flyerModel.create(flyerDto)
+
+            return { message: "flyer added", flyer }
+
+        } catch (error: any) {
+            console.log('flyer error ' + error);            
+            throw new InternalServerErrorException(`flyer cannot be created now`);
+        }
+    }
+
     // add product
     async addProduct(productDto: any) {       
         
@@ -64,21 +81,21 @@ export class ProductService {
         }
     }
 
-    // get all product/brand/category
+    // get all product/brand/category/flyer
     async getAll(query: any ) {
-        let result;
 
         if (query.type === 'category') {
             const data = await this.categoryModel.find().sort({ createdAt: -1 })
             return {
                 data
-            };
+            }
 
         } else if (query.type === 'brand') {
             const data = await this.brandModel.find().sort({ createdAt: -1 })
             return {
                 data
-            };
+            }
+
         } else if (query.type === 'product') {
 
             const products = await this.productModel.find().sort({ createdAt: -1 })
@@ -94,13 +111,17 @@ export class ProductService {
 
             return {
                 data
-            };
+            }
+
+        } else if (query.type === 'flyer') {
+            const data = await this.flyerModel.find().sort({ createdAt: -1 })
+            return {
+                data
+            }
 
         } else {
             throw new NotFoundException('Invalid type');
         }
-
-        return result;
     }
 
     // get single product review
@@ -283,7 +304,7 @@ export class ProductService {
 
 
     // edit category / brand
-    async editData(dataDto: { id: string, name: string, type: string, image?: string }) {
+    async editData(dataDto: { id: string, name?: string, type: string, image?: string, section?: string }) {
         const isValidId = mongoose.isValidObjectId(dataDto.id)
 
         if(!isValidId){
@@ -302,6 +323,12 @@ export class ProductService {
 
             }else if(dataDto.type === 'category'){
                 await this.categoryModel.findOneAndUpdate({ _id: dataDto.id }, 
+                    { $set: dataDto },
+                    { new: true }
+                )
+                
+            }else if(dataDto.type === 'flyer'){
+                await this.flyerModel.findOneAndUpdate({ _id: dataDto.id }, 
                     { $set: dataDto },
                     { new: true }
                 )
@@ -370,6 +397,9 @@ export class ProductService {
 
             }else if(type === 'product'){
                 await this.productModel.findByIdAndDelete({ _id: id })
+
+            }else if(type === 'flyer'){
+                await this.flyerModel.findByIdAndDelete({ _id: id })
 
             }else{
                 throw new NotFoundException('id not found')

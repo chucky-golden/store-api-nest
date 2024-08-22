@@ -52,6 +52,14 @@ export class ProductController {
         return data
     }
 
+    // upload flyer
+    @Post('/flyer')
+    @UseGuards(JwtAuthGuard)
+    async createFlyer(@Body() body: any){
+        // Call the productService to add the product
+        return this.productService.addFlyer(body);
+    }
+
     // upload product
     @Post('/product')
     @UseGuards(JwtAuthGuard)
@@ -60,7 +68,7 @@ export class ProductController {
         return this.productService.addProduct(body);
     }
 
-    // get all products, brand or category depending on query
+    // get all products, brand, category or flyer depending on query
     @Get()
     getAllElements(@Query() query: Record<string, any>) {
         return this.productService.getAll(query);
@@ -105,7 +113,7 @@ export class ProductController {
     // edit category
     @Patch('/editdata')
     @UseGuards(JwtAuthGuard)
-    editData(@Body() body: { id: string, name: string, type: string, image?: string }){       
+    editData(@Body() body: { id: string, name?: string, type: string, image?: string, section?: string }){       
         return this.productService.editData(body)
     }
 
@@ -147,5 +155,11 @@ export class ProductController {
     @Delete('/category/:id')
     deleteCategoryById(@Param('id') id: string){
         return this.productService.deleteOne(id, 'category')
+    }
+
+    // delete flyer by id
+    @Delete('/flyer/:id')
+    deleteFlyerById(@Param('id') id: string){
+        return this.productService.deleteOne(id, 'flyer')
     }
 }

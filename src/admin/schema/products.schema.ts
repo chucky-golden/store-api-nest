@@ -99,9 +99,20 @@ export class Rating extends Document{
     rating: number
 }
 
+@Schema({ timestamps: true })
+export class Flyer extends Document{ 
+
+    @Prop()
+    section: string
+    
+    @Prop()
+    img: string
+}
+
 
 export const ProductSchema = SchemaFactory.createForClass(Product)
 export const ReviewSchema = SchemaFactory.createForClass(Review)
 export const RatingSchema = SchemaFactory.createForClass(Rating)
 export const CategorySchema = SchemaFactory.createForClass(Category)
 export const BrandSchema = SchemaFactory.createForClass(Brand)
+export const FlyerSchema = SchemaFactory.createForClass(Flyer)
