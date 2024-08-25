@@ -384,14 +384,16 @@ export class MeService {
 
 
     // delete product saved to favourite
-    async deleteFavourite(id: string) {
+    async deleteFavourite(userid: string, query: any) {
+
         // Check if the provided ID is a valid MongoDB ObjectId
-        const isValidId = mongoose.isValidObjectId(id);
-        if (!isValidId) {
-            throw new BadRequestException('Please enter a correct ID');
+        const isValidUserId = mongoose.isValidObjectId(userid);
+        const isValidProductId = mongoose.isValidObjectId(query.productid);
+        if (!isValidUserId && !isValidProductId) {
+            throw new BadRequestException('Please enter a correct user and product ID');
         }
 
-        const result = await this.favouriteModel.findByIdAndDelete(id);
+        const result = await this.favouriteModel.findOneAndDelete({ productId: query.productid, userId: userid });
 
         if (!result) {
             throw new NotFoundException('Favourite not found');
@@ -400,7 +402,8 @@ export class MeService {
         return { message: 'record deleted successfully'}
     }
 
-    // delete product saved to favourite
+
+    // delete saved review
     async deleteSavedReview(id: string) {
         // Check if the provided ID is a valid MongoDB ObjectId
         const isValidId = mongoose.isValidObjectId(id);

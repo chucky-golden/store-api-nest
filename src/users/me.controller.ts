@@ -125,10 +125,10 @@ export class MeController {
     }
 
     // delete product saved to favourite by id
-    @Delete('addfavourite/:id')
+    @Delete('addfavourite/:userid')
     @UseGuards(JwtAuthGuard)
-    deleteFavourite(@Param('id') id: string){       
-        return this.meService.deleteFavourite(id)
+    deleteFavourite(@Param('userid') userid: string, @Query() query: Record<string, any>){       
+        return this.meService.deleteFavourite(userid, query)
     }
 
     // edit saved Review
