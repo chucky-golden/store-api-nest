@@ -100,17 +100,15 @@ export class ProductService {
 
             const products = await this.productModel.find().sort({ createdAt: -1 })
 
-            const data = await Promise.all(products.map(async (product) => {
-                const { data: ratingCount } = await this.getAllProductsByRatingCount(product._id); // Fetch rating count for each product
-                return {
+            const data = [];
+
+            for (const product of products) {
+                const ratingCount = await this.getProductByRatingCount(product._id); // Fetch rating count for the product
+                data.push({
                     ...product.toObject(), // Convert Mongoose document to plain JS object
-                    ratingCount: ratingCount || { 
-                        totalRatings: 0, 
-                        ratingCounts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, 
-                        sumRating: 0 
-                    } // Default values if no ratings found
-                };
-            }));
+                    ratingCount
+                });
+            }
 
             return {
                 data
@@ -260,60 +258,6 @@ export class ProductService {
             }
         }
     }
-
-    // get all product and review count
-    async getAllProductsByRatingCount(productId?: string) {
-        const matchStage = productId ? { productId } : {};
-        
-        // Aggregate ratings count and sum of ratings
-        const ratingData = await this.reviewModel.aggregate([
-            { $match: matchStage },  // Filter by productId if provided
-            {
-                $group: {
-                    _id: {
-                        productId: "$productId",
-                        rating: "$rating"
-                    },
-                    count: { $sum: 1 },
-                    sumRating: { $sum: "$rating" }
-                }
-            }
-        ]);
-    
-        // Initialize a map to store the results for each product
-        const productRatingsMap: any = {};
-    
-        // Populate the map with the aggregated data
-        ratingData.forEach((item: any) => {
-            const productId = item._id.productId;
-            const rating = item._id.rating;
-    
-            if (!productRatingsMap[productId]) {
-                productRatingsMap[productId] = {
-                    totalRatings: 0,
-                    ratingCounts: {
-                        1: 0,
-                        2: 0,
-                        3: 0,
-                        4: 0,
-                        5: 0
-                    },
-                    sumRating: 0
-                };
-            }
-    
-            productRatingsMap[productId].ratingCounts[rating] = item.count;
-            productRatingsMap[productId].sumRating += item.sumRating;
-            productRatingsMap[productId].totalRatings += item.count;
-        });
-    
-        if (productId) {
-            return { data: productRatingsMap[productId] || null }; // Return data for the specified product
-        } else {
-            return { data: productRatingsMap }; // Return data for all products
-        }
-    }
-    
 
     // get single category/brand/product by id
     async getOne(id: string, type: string) {
