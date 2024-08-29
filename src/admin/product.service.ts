@@ -100,15 +100,41 @@ export class ProductService {
 
             const products = await this.productModel.find().sort({ createdAt: -1 })
 
-            // Fetch user information for each review
-            const data = await Promise.all(products.map(async (product) => {
-                const ratingCount = await this.getProductByRatingCount(product._id) // Fetch rating count
-                return {
-                    ...product.toObject(), // Convert Mongoose document to plain JS object
-                    ratingCount
-                };
-            }));
+            const ratingData = await this.reviewModel.aggregate([
+                { $match: { productId: { $in: products.map(p => p._id) } } },
+                {
+                    $group: {
+                        _id: "$productId",
+                        ratingCounts: {
+                            $push: {
+                                rating: "$rating",
+                                count: { $sum: 1 }
+                            }
+                        },
+                        totalRatings: { $sum: 1 },
+                        sumRating: { $sum: "$rating" }
+                    }
+                }
+            ]);
 
+            // Convert the aggregation result to a more readable format
+            const ratingMap = ratingData.reduce((acc, item) => {
+                acc[item._id] = {
+                    totalRatings: item.totalRatings,
+                    ratingCounts: item.ratingCounts.reduce((ratingAcc, ratingItem) => {
+                        ratingAcc[ratingItem.rating] = ratingItem.count;
+                        return ratingAcc;
+                    }, { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }),
+                    sumRating: item.sumRating
+                };
+                return acc;
+            }, {});
+
+            // Map the products with their corresponding rating data
+            const data = products.map((product) => ({
+                ...product.toObject(),
+                ratingCount: ratingMap[product._id] || { totalRatings: 0, ratingCounts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, sumRating: 0 }
+            }));
             return {
                 data
             }
