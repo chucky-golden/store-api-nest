@@ -103,6 +103,7 @@ export class ProductService {
             const data = [];
 
             for (const product of products) {
+                let id = product._id.toString()
                 const ratingCount = await this.getProductByRatingCount(product._id); // Fetch rating count for the product
                 data.push({
                     ...product.toObject(), // Convert Mongoose document to plain JS object
