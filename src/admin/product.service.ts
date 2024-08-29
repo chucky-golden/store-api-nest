@@ -101,21 +101,28 @@ export class ProductService {
             const products = await this.productModel.find().sort({ createdAt: -1 })
 
             const ratingData = await this.reviewModel.aggregate([
-                { $match: { productId: { $in: products.map(p => p._id) } } },
+                {
+                    $match: {
+                        productId: { $in: products.map(p => new mongoose.Types.ObjectId(p._id)) }
+                    }
+                },
                 {
                     $group: {
                         _id: "$productId",
+                        totalRatings: { $sum: 1 },
+                        sumRating: { $sum: "$rating" },
                         ratingCounts: {
                             $push: {
                                 rating: "$rating",
                                 count: { $sum: 1 }
                             }
-                        },
-                        totalRatings: { $sum: 1 },
-                        sumRating: { $sum: "$rating" }
+                        }
                     }
                 }
             ]);
+
+            // Logging the raw aggregation result for debugging
+            console.log("Aggregation Result:", JSON.stringify(ratingData, null, 2));
 
             // Convert the aggregation result to a more readable format
             const ratingMap = ratingData.reduce((acc, item) => {
