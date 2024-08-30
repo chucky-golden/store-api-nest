@@ -100,20 +100,19 @@ export class ProductService {
 
             const products = await this.productModel.find().sort({ createdAt: -1 })
 
-            const data = [];
-
-            for (const product of products) {
-                let id = product._id.toString()
-                const ratingCount = await this.getProductByRatingCount(product._id); // Fetch rating count for the product
-                data.push({
+            // Fetch user information for each review
+            const data = await Promise.all(products.map(async (product) => {
+                const ratingCount = await this.getProductByRatingCount(product._id.toString()) // Fetch rating count
+                return {
                     ...product.toObject(), // Convert Mongoose document to plain JS object
                     ratingCount
-                });
-            }
+                };
+            }));
 
             return {
                 data
             }
+
 
         } else if (query.type === 'flyer') {
             const data = await this.flyerModel.find().sort({ createdAt: -1 })
