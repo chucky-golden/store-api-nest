@@ -420,4 +420,21 @@ export class MeService {
         return { message: 'record deleted successfully'}
     }
 
+    // delete saved review
+    async deleteSavedAddress(id: string) {
+        // Check if the provided ID is a valid MongoDB ObjectId
+        const isValidId = mongoose.isValidObjectId(id);
+        if (!isValidId) {
+            throw new BadRequestException('Please enter a correct ID');
+        }
+
+        const result = await this.saveAddressModel.findByIdAndDelete(id);
+
+        if (!result) {
+            throw new NotFoundException('address not found');
+        }
+
+        return { message: 'record deleted successfully'}
+    }
+
 }

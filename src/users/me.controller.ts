@@ -144,4 +144,11 @@ export class MeController {
     deleteSavedReview(@Param('id') id: string){       
         return this.meService.deleteSavedReview(id)
     }
+
+    // delete saved review
+    @Delete('savedaddress/:addressid')
+    @UseGuards(JwtAuthGuard)
+    deleteSavedAddress(@Param('addressid') addressid: string){       
+        return this.meService.deleteSavedAddress(addressid)
+    }
 }
