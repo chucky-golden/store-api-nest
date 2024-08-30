@@ -98,20 +98,20 @@ export class ProductService {
 
         } else if (query.type === 'product') {
 
-            const products = await this.productModel.find().sort({ createdAt: -1 })
+            const products = await this.productModel.find().sort({ createdAt: -1 });
 
-            // Fetch user information for each review
+            // Fetch rating information for each product
             const data = await Promise.all(products.map(async (product) => {
-                const ratingCount = await this.getProductByRatingCount(product._id.toString()) // Fetch rating count
+                const ratingData = await this.getProductByRatingCount(product._id.toString()); // Fetch rating data
                 return {
-                    ...product.toObject(), // Convert Mongoose document to plain JS object
-                    ratingCount
+                    ...product.toObject(),
+                    ratingCount: ratingData.data.totalRatings,
+                    ratingCounts: ratingData.data.ratingCounts,
+                    sumRating: ratingData.data.sumRating
                 };
             }));
 
-            return {
-                data
-            }
+            return { data };
 
 
         } else if (query.type === 'flyer') {
