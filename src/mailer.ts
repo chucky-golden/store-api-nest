@@ -26,7 +26,7 @@ export class SendMailService {
         });
 
         // Configure nodemailer transporter
-        const transporter = nodemailer.createTransport({
+        this.transporter = nodemailer.createTransport({
             host: HOST,
             port: PORT,
             secure: true,
