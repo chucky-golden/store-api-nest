@@ -14,7 +14,7 @@ export const mailGenerator = new Mailgen({
     product: {
         // Appears in header & footer of e-mails
         name: 'Churchil',
-        link: 'https://www.Churchil.com/'
+        link: 'https://www.Churchilexpansions.com/'
     }
 });
 

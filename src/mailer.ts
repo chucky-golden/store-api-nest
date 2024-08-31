@@ -1,6 +1,13 @@
 import nodemailer from 'nodemailer';
 import Mailgen  = require('mailgen')
 import { Injectable } from '@nestjs/common';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const HOST: any = process.env.EMAIL_HOST
+const PORT: any = process.env.EMAIL_PORT
+const USER: any = process.env.EMAIL_USER
+const PASS: any = process.env.EMAIL_PASS
 
 @Injectable()
 export class SendMailService {
@@ -14,18 +21,18 @@ export class SendMailService {
             product: {
                 // Appears in header & footer of e-mails
                 name: 'Churchil',
-                link: 'https://www.churchil.com/'
+                link: 'https://www.Churchilexpansions.com/'
             }
         });
 
         // Configure nodemailer transporter
-        this.transporter = nodemailer.createTransport({
-            host: 'mail.Churchil.com',
-            port: 465,
+        const transporter = nodemailer.createTransport({
+            host: HOST,
+            port: PORT,
             secure: true,
             auth: {
-                user: 'support@Churchil.com',
-                pass: 'Churchil2024'
+            user: USER,
+            pass: PASS
             }
         });
     }
@@ -66,7 +73,7 @@ export class SendMailService {
         try {
             const message = await this.generateMail(to);
             const mailOptions = {
-                from: 'support@dooryd.com',
+                from: USER,
                 to: to,
                 subject: subject,
                 html: message
