@@ -84,5 +84,16 @@ export class SaveAddress extends Document{
     additionalNote: string
 }
 
+@Schema({ timestamps: true })
+export class Cart extends Document{ 
+
+    @Prop()
+    userId: string
+
+    @Prop()
+    cartData: string
+}
+
 export const OrderSchema = SchemaFactory.createForClass(Order)
 export const SaveAddressSchema = SchemaFactory.createForClass(SaveAddress)
+export const CartSchema = SchemaFactory.createForClass(Cart)

@@ -61,6 +61,20 @@ export class MeController {
         return this.meService.getTopSelling()
     }
 
+    // get arrays from frontend and update product selling count.
+    @Post('/cart')
+    @UseGuards(JwtAuthGuard)
+    createCart(@Body() body: any){       
+        return this.meService.createCart(body)
+    }
+
+    // get top selling
+    @Get('/cart/:userid')
+    @UseGuards(JwtAuthGuard)
+    getCart(@Param('userid') userid: string){
+        return this.meService.getCart(userid)
+    }
+
     // get all reviews saved to draft
     @Get('/reviews/:userid')
     @UseGuards(JwtAuthGuard)

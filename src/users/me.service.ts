@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Order, SaveAddress } from './schema/order.schema';
+import { Cart, Order, SaveAddress } from './schema/order.schema';
 import mongoose, { Model } from 'mongoose';
 import { CreateOrderDto, CreateRating, CreateReview } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -34,6 +34,9 @@ export class MeService {
 
         @InjectModel(SaveAddress.name)
         private saveAddressModel: Model<SaveAddress>,
+
+        @InjectModel(SaveAddress.name)
+        private cartModel: Model<Cart>,
     ){}
 
 
@@ -278,6 +281,38 @@ export class MeService {
         }
 
         return order
+    }
+
+
+    // add or update cart.
+    async createCart(datas: any) {
+        try {
+            const { userId, cartData } = datas;
+    
+            const userCart = await this.cartModel.findOne({ userId });
+    
+            if (userCart) {
+                await this.cartModel.updateOne(
+                    { userId },
+                    { $set: { cartData } }
+                );
+                return { message: "cart updated", userCart }
+            }
+    
+            const newCart = await this.cartModel.create({ ...datas });
+            return { message: "cart created", newCart };
+            
+        } catch (error: any) {
+            console.log('message', error);
+            throw new InternalServerErrorException(`Error processing request`);
+        }
+    }
+    
+
+    // get all users saved address using userid
+    async getCart(userId: string) {
+        const data = await this.cartModel.find({ userId })
+        return { data }
     }
 
 
