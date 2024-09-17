@@ -128,6 +128,24 @@ export class ProductController {
                 throw new BadRequestException('Product not found');
             }
 
+            let slug = product.slug
+
+            if (!slug) {
+                if (body.name && product.name !== body.name) {
+                    slug = body.name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+                    slug += '-' + Math.floor(Math.random() * Date.now()).toString(16);
+                } else {
+                    slug = product.name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+                    slug += '-' + Math.floor(Math.random() * Date.now()).toString(16);
+                }
+            } else if (body.name && product.name !== body.name) {
+                slug = body.name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+                slug += '-' + Math.floor(Math.random() * Date.now()).toString(16);
+            }
+            
+
+            body.slug = slug;
+
             // Update the product data
             const updatedProduct = await this.productService.updateProduct(body);
 

@@ -71,7 +71,10 @@ export class ProductService {
     async addProduct(productDto: any) {       
         
         try{
-            const product = await this.productModel.create(productDto)
+            let slug = productDto.name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+            slug += '-' + Math.floor(Math.random() * Date.now()).toString(16);
+
+            const product = await this.productModel.create({ ...productDto, slug })
 
             return { message: "product added", product }
 
@@ -276,14 +279,31 @@ export class ProductService {
                 fetchData = await this.brandModel.findOne({ _id: id })
 
             }else if(type === 'product'){
-                let data: any = await this.productModel.findOne({ _id: id })
+                let data: any = await this.productModel.findOne({
+                    $or: [
+                        { _id: id },
+                        { slug: id }
+                    ]
+                })
+
+                if (!data) {
+                    throw new NotFoundException('Product not found');
+                }
+
                 const ratingCount = await this.getProductByRatingCount(id)
-                let similarProduct = await this.productModel.find({ category: data.category, brand: data.brand }).limit(10)
+
+                let similarProduct = await this.productModel.find({ 
+                    category: data.category, 
+                    brand: data.brand,
+                    _id: { $ne: data._id }
+                }).limit(10)
+
                 let newData = {
                     'product': data,
                     'similarProducts': similarProduct,
                     ratingCount
                 }
+                
                 fetchData = newData
             }else{
                 throw new NotFoundException('id not found')

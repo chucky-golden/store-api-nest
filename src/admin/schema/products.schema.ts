@@ -49,6 +49,9 @@ export class Product extends Document{
     description: string
 
     @Prop({ required: false })
+    slug: string
+
+    @Prop({ required: false })
     colors: []
 
     @Prop()
