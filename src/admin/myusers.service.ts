@@ -22,7 +22,7 @@ export class MyUsersService {
         let result;
 
         if(query.type === 'orders'){
-            const data = await this.orderModel.find().sort({ createdAt: -1 })
+            const data = await this.orderModel.find({ paid: true }).sort({ createdAt: -1 })
             return {
                 data
             };
