@@ -114,6 +114,10 @@ export class CreateOrderDto {
     @IsString()
     readonly lga: string;
 
+    @IsNotEmpty()
+    @IsString()
+    readonly state: string;
+
     @IsOptional()
     @IsString()
     readonly landmark: string;

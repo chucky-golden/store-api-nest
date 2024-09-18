@@ -34,6 +34,9 @@ export class Order extends Document{
     lga: string
     
     @Prop()
+    state: string
+    
+    @Prop()
     landmark: string
     
     @Prop()
@@ -76,6 +79,9 @@ export class SaveAddress extends Document{
     
     @Prop()
     lga: string
+    
+    @Prop()
+    state: string
     
     @Prop()
     landmark: string
