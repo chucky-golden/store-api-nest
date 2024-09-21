@@ -68,7 +68,7 @@ export class MeController {
         return this.meService.createCart(body)
     }
 
-    // get top selling
+    // get user cart
     @Get('/cart/:userid')
     @UseGuards(JwtAuthGuard)
     getCart(@Param('userid') userid: string){
