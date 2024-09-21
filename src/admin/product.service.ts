@@ -281,7 +281,7 @@ export class ProductService {
             }else if(type === 'product'){
                 let data: any = await this.productModel.findOne({
                     $or: [
-                        { sku: id },
+                        { _id: id },
                         { slug: id }
                     ]
                 })
