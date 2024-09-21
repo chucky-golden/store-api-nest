@@ -35,7 +35,7 @@ export class MeService {
         @InjectModel(SaveAddress.name)
         private saveAddressModel: Model<SaveAddress>,
 
-        @InjectModel(SaveAddress.name)
+        @InjectModel(Cart.name)
         private cartModel: Model<Cart>,
     ){}
 
