@@ -289,21 +289,19 @@ export class MeService {
         try {
             const { userId, cartData } = datas;
     
-            const userCart = await this.cartModel.findOne({ userId });
+            const updatedCart = await this.cartModel.findOneAndUpdate(
+                { userId },
+                { $set: { cartData } },
+                { new: true, upsert: true }
+            );
     
-            if (userCart) {
-                await this.cartModel.updateOne(
-                    { userId },
-                    { $set: { cartData } }
-                );
-                return { message: "cart updated", userCart }
-            }
-    
-            const newCart = await this.cartModel.create({ ...datas });
-            return { message: "cart created", newCart };
+            return { 
+                message: updatedCart ? "cart updated" : "cart created", 
+                cart: updatedCart 
+            };
             
         } catch (error: any) {
-            console.log('message', error);
+            console.error('Error in createCart:', error.message || error);
             throw new InternalServerErrorException(`Error processing request`);
         }
     }
