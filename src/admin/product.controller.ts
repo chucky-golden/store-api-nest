@@ -74,6 +74,12 @@ export class ProductController {
         return this.productService.getAll(query);
     }
 
+    // get all products with compression
+    @Get('/data')
+    getAllElementsCompressed() {
+        return this.productService.getAllCompressed();
+    }
+
     // get product review by id
     @Get('/productreviews/:productid')
     getProductReviews(@Query() query: Record<string, any>, @Param('productid') id: string){

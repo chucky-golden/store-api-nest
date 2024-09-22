@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Category, Brand, Product, Review, Rating, Flyer } from './schema/products.schema';
 import mongoose, { Model } from 'mongoose';
 import { User } from '../users/schema/user.schema';
+import { compressSent } from './common/compression';
 
 @Injectable()
 export class ProductService {
@@ -126,6 +127,27 @@ export class ProductService {
         } else {
             throw new NotFoundException('Invalid type');
         }
+    }
+
+
+    // get all product compressed
+    async getAllCompressed() {
+        const products = await this.productModel.find().sort({ createdAt: -1 });
+
+        // Fetch rating information for each product
+        const data = await Promise.all(products.map(async (product) => {
+            const ratingData = await this.getProductByRatingCount(product._id.toString()); // Fetch rating data
+            return {
+                ...product.toObject(),
+                ratingCount: ratingData.data.totalRatings,
+                ratingCounts: ratingData.data.ratingCounts,
+                sumRating: ratingData.data.sumRating
+            }
+        }))
+
+        const compressedData = await compressSent(data)
+
+        return { compressedData }
     }
 
     // get single product review
