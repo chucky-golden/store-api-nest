@@ -263,13 +263,7 @@ export class ProductService {
     }
 
     // get single category/brand/product by id
-    async getOne(id: string, type: string) {
-        const isValidId = mongoose.isValidObjectId(id)
-
-        if(!isValidId){
-            throw new BadRequestException('please enter a correct id')
-        }
-        
+    async getOne(id: string, type: string) {        
         try{
             let fetchData:any;
             if(type === 'category'){
@@ -279,24 +273,22 @@ export class ProductService {
                 fetchData = await this.brandModel.findOne({ _id: id })
 
             }else if(type === 'product'){
-                let data: any = await this.productModel.findOne({
-                    $or: [
-                        { _id: id },
-                        { slug: id }
-                    ]
-                })
+                let query: any = mongoose.isValidObjectId(id) ? { _id: id } : { slug: id };
+
+                let data: any = await this.productModel.findOne(query);
 
                 if (!data) {
+                    console.log(`Product not found for id/slug: ${id}`);
                     throw new NotFoundException('Product not found');
                 }
-
-                const ratingCount = await this.getProductByRatingCount(id)
-
+    
+                const ratingCount = await this.getProductByRatingCount(data._id)
+    
                 let similarProduct = await this.productModel.find({ 
                     category: data.category, 
                     brand: data.brand,
                     _id: { $ne: data._id }
-                }).limit(10)
+                }).limit(10);
 
                 let newData = {
                     'product': data,
@@ -311,6 +303,8 @@ export class ProductService {
 
             return fetchData
         } catch (error: any) {
+            console.error('Error:', error);
+
             if (error instanceof NotFoundException && error.message === 'id not found') {
                 throw error;
             } 
@@ -437,5 +431,33 @@ export class ProductService {
             }
         }
     }
+
+
+
+
+
+
+    
+    // // test code to edit all product
+    async allProducts() {
+        try {
+          const productsWithoutSlug = await this.productModel.find({ slug: { $exists: false } });
+      
+          for (let product of productsWithoutSlug) {
+            let slug = product.name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+            slug += '-' + Math.floor(Math.random() * Date.now()).toString(16);
+            
+            product.slug = slug;
+            await product.save();
+          }
+      
+          return { message: "Slugs updated successfully" };
+      
+        } catch (error: any) {
+          console.log('data error ' + error);
+          throw new InternalServerErrorException(`Error processing request`);
+        }
+      }
+      
 
 }

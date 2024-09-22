@@ -180,4 +180,12 @@ export class ProductController {
     deleteFlyerById(@Param('id') id: string){
         return this.productService.deleteOne(id, 'flyer')
     }
+
+
+
+    // test code to edit general products
+    @Patch('/all')
+    allProducts(){
+        return this.productService.allProducts()
+    }
 }
