@@ -101,12 +101,71 @@ export class ProductService {
             }
 
         } else if (query.type === 'product') {
+            const filters: any = {}
 
-            const products = await this.productModel.find().sort({ createdAt: -1 });
+            if (query.isFeatured !== undefined) {
+                filters["features"] = { 
+                    $elemMatch: { isFeatured: query.isFeatured === 'true' }
+                };
+            }
+            
+            if (query.isBestDeal !== undefined) {
+                filters["features"] = { 
+                    $elemMatch: { isBestDeal: query.isBestDeal === 'true' }
+                };
+            }
+            
+            if (query.isFeaturedBestDeal !== undefined) {
+                filters["features"] = { 
+                    $elemMatch: { isFeaturedBestDeal: query.isFeaturedBestDeal === 'true' }
+                };
+            }
+            
+            if (query.salePrice !== undefined) {
+                filters["features"] = { 
+                    $elemMatch: { salePrice: query.salePrice }
+                };
+            }
+            
+            if (query.hot !== undefined) {
+                filters["features"] = { 
+                    $elemMatch: { hot: query.hot === 'true' }
+                };
+            }
 
-            // Fetch rating information for each product
+            if (query.brand) {
+                filters.brand = query.brand;
+            }
+
+            if (query.category) {
+                filters.category = query.category;
+            }
+
+            if (query.price) {
+                filters.price = query.price;
+            }
+
+            if (query.name) {
+                filters.name = new RegExp(query.name, 'i');
+            }
+
+
+            const resPerPage = 15;
+            const currentPage = Number(query.page) || 1;
+            const skip = resPerPage * (currentPage - 1);
+
+            const totalDocuments = await this.productModel.countDocuments(filters);
+            const products = await this.productModel.find(filters)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(resPerPage);
+
+            const totalPages = Math.ceil(totalDocuments / resPerPage);
+            const hasPreviousPage = currentPage > 1;
+            const hasNextPage = currentPage < totalPages;
+
             const data = await Promise.all(products.map(async (product) => {
-                const ratingData = await this.getProductByRatingCount(product._id.toString()); // Fetch rating data
+                const ratingData = await this.getProductByRatingCount(product._id.toString());
                 return {
                     ...product.toObject(),
                     ratingCount: ratingData.data.totalRatings,
@@ -115,8 +174,17 @@ export class ProductService {
                 };
             }));
 
-            return { data };
 
+            return {
+                data,
+                totalDocuments,
+                hasPreviousPage,
+                previousPage: hasPreviousPage ? currentPage - 1 : null,
+                hasNextPage,
+                nextPage: hasNextPage ? currentPage + 1 : null,
+                totalPages,
+                currentPage
+            };
 
         } else if (query.type === 'flyer') {
             const data = await this.flyerModel.find().sort({ createdAt: -1 })
