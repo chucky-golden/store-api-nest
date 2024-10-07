@@ -142,7 +142,11 @@ export class ProductService {
             }
 
             if (query.price) {
-                filters.price = query.price;
+                const [minPrice, maxPrice] = query.price.split('-').map(Number);
+                filters.price = {
+                    $gte: minPrice,
+                    $lte: maxPrice,
+                };
             }
 
             if (query.name) {
