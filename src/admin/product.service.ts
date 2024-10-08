@@ -170,12 +170,14 @@ export class ProductService {
                     },
                     {
                         $project: {
-                            ratingCount: { $size: { $filter: { input: '$ratings', as: 'rating', cond: { $eq: ['$$rating.rating', ratingCount] } } } },
+                            productId: '$_id',
+                            ratingCount: { $size: '$ratings' },
+                            ratings: 1
                         }
                     },
                     {
                         $match: {
-                            ratingCount: { $gt: 0 }
+                            ratingCount: { $gte: Number(query.ratingCount) }
                         }
                     }
                 ]);
