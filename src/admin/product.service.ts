@@ -75,6 +75,8 @@ export class ProductService {
             let slug = productDto.name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
             slug += '-' + Math.floor(Math.random() * Date.now()).toString(16);
 
+            productDto.price = Number(productDto.price)
+
             const product = await this.productModel.create({ ...productDto, slug })
 
             return { message: "product added", product }
@@ -125,7 +127,7 @@ export class ProductService {
             }
         
             if (query.state !== undefined) {
-                featureConditions.state = query.state;
+                featureConditions.state = { $regex: query.state, $options: 'i' };
             }
         
             // Add the conditions to the filters if any feature conditions exist
@@ -151,6 +153,42 @@ export class ProductService {
 
             if (query.name) {
                 filters.name = { $regex: query.name, $options: 'i' };
+            }
+
+            // New condition for rating count
+            if (query.ratingCount !== undefined) {
+                const ratingCount = Number(query.ratingCount);
+
+                // Use $lookup to join with the reviews collection and filter based on the total ratings
+                const productsWithRating = await this.productModel.aggregate([
+                    {
+                        $lookup: {
+                            from: 'reviews', // the collection name for your reviews
+                            localField: '_id',
+                            foreignField: 'productId',
+                            as: 'ratings'
+                        }
+                    },
+                    {
+                        $project: {
+                            name: 1, // Include other necessary fields here
+                            features: 1,
+                            brand: 1,
+                            category: 1,
+                            price: 1,
+                            ratingCount: { $size: { $filter: { input: '$ratings', as: 'rating', cond: { $eq: ['$$rating.rating', ratingCount] } } } },
+                        }
+                    },
+                    {
+                        $match: {
+                            ratingCount: { $gt: 0 } // Ensures we only return products with the specified rating count
+                        }
+                    }
+                ]);
+
+                // If you want to incorporate this back into your main filters, you can update the filters as needed.
+                // For example, you might filter the products found above.
+                filters._id = { $in: productsWithRating.map(product => product._id) }
             }
 
 
