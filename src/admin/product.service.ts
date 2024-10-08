@@ -159,11 +159,10 @@ export class ProductService {
             if (query.ratingCount !== undefined) {
                 const ratingCount = Number(query.ratingCount);
 
-                // Use $lookup to join with the reviews collection and filter based on the total ratings
                 const productsWithRating = await this.productModel.aggregate([
                     {
                         $lookup: {
-                            from: 'reviews', // the collection name for your reviews
+                            from: 'reviews',
                             localField: '_id',
                             foreignField: 'productId',
                             as: 'ratings'
@@ -171,24 +170,22 @@ export class ProductService {
                     },
                     {
                         $project: {
-                            name: 1, // Include other necessary fields here
-                            features: 1,
-                            brand: 1,
-                            category: 1,
-                            price: 1,
                             ratingCount: { $size: { $filter: { input: '$ratings', as: 'rating', cond: { $eq: ['$$rating.rating', ratingCount] } } } },
                         }
                     },
                     {
                         $match: {
-                            ratingCount: { $gt: 0 } // Ensures we only return products with the specified rating count
+                            ratingCount: { $gt: 0 }
                         }
                     }
                 ]);
 
-                // If you want to incorporate this back into your main filters, you can update the filters as needed.
-                // For example, you might filter the products found above.
+                console.log('agrre', productsWithRating);
+                
                 filters._id = { $in: productsWithRating.map(product => product._id) }
+
+                console.log('filters', filters);
+                
             }
 
 

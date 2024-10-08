@@ -119,3 +119,8 @@ export const RatingSchema = SchemaFactory.createForClass(Rating)
 export const CategorySchema = SchemaFactory.createForClass(Category)
 export const BrandSchema = SchemaFactory.createForClass(Brand)
 export const FlyerSchema = SchemaFactory.createForClass(Flyer)
+
+ProductSchema.set('toObject', { virtuals: true });
+ProductSchema.set('toJSON', { virtuals: true });
+ReviewSchema.set('toObject', { virtuals: true });
+ReviewSchema.set('toJSON', { virtuals: true });
