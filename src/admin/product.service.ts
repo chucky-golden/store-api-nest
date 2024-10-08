@@ -102,55 +102,55 @@ export class ProductService {
 
         } else if (query.type === 'product') {
             const filters: any = {}
+            const featureConditions: any = {};
 
             if (query.isFeatured !== undefined) {
-                filters["features"] = { 
-                    $elemMatch: { isFeatured: query.isFeatured === 'true' }
-                };
+                featureConditions.isFeatured = query.isFeatured === 'true';
             }
-            
+        
             if (query.isBestDeal !== undefined) {
-                filters["features"] = { 
-                    $elemMatch: { isBestDeal: query.isBestDeal === 'true' }
-                };
+                featureConditions.isBestDeal = query.isBestDeal === 'true';
             }
-            
+        
             if (query.isFeaturedBestDeal !== undefined) {
-                filters["features"] = { 
-                    $elemMatch: { isFeaturedBestDeal: query.isFeaturedBestDeal === 'true' }
-                };
+                featureConditions.isFeaturedBestDeal = query.isFeaturedBestDeal === 'true';
             }
-            
+        
             if (query.salePrice !== undefined) {
-                filters["features"] = { 
-                    $elemMatch: { salePrice: query.salePrice }
-                };
+                featureConditions.salePrice = query.salePrice;
             }
-            
+        
             if (query.hot !== undefined) {
-                filters["features"] = { 
-                    $elemMatch: { hot: query.hot === 'true' }
-                };
+                featureConditions.hot = query.hot === 'true';
+            }
+        
+            if (query.state !== undefined) {
+                featureConditions.state = query.state;
+            }
+        
+            // Add the conditions to the filters if any feature conditions exist
+            if (Object.keys(featureConditions).length > 0) {
+                filters["features"] = { $elemMatch: featureConditions };
             }
 
             if (query.brand) {
-                filters.brand = query.brand;
+                filters.brand = { $regex: query.brand, $options: 'i' };
             }
 
             if (query.category) {
-                filters.category = query.category;
+                filters.category = { $regex: query.category, $options: 'i' };
             }
 
             if (query.price) {
-                const [minPrice, maxPrice] = query.price.split('-').map(Number);
+                const [minPrice, maxPrice] = query.price.split('-').map(Number)
                 filters.price = {
                     $gte: minPrice,
                     $lte: maxPrice,
-                };
+                }
             }
 
             if (query.name) {
-                filters.name = new RegExp(query.name, 'i');
+                filters.name = { $regex: query.name, $options: 'i' };
             }
 
 

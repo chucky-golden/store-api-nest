@@ -31,7 +31,7 @@ export class Product extends Document{
     name: string
 
     @Prop()
-    price: string
+    price: number
 
     @Prop({ required: false })
     sku: string
