@@ -120,7 +120,7 @@ export class UsersService {
             const user = await this.userModel.findOne({ email: signInDto.email })
 
             if(!user){
-                throw new UnauthorizedException(`user user with specified email not found`);
+                throw new UnauthorizedException(`user user with specified email not found please register first`);
             }
 
             if(user.active !== 1){
