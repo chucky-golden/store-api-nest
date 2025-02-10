@@ -14,7 +14,7 @@ export class MeController {
 
     // add order
     @Post('/orders')
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     createOrder(@Body() body: CreateOrderDto){       
         return this.meService.addOrder(body)
     }

@@ -82,7 +82,7 @@ export class CreateRating {
 
 export class CreateOrderDto {
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     readonly userId: string;
 

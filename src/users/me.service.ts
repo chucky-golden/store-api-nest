@@ -9,6 +9,7 @@ import { User } from './schema/user.schema';
 import { paginate } from './common/pagination'
 import { Product, Rating, Review } from 'src/admin/schema/products.schema';
 import { Favourite } from './schema/favourite.schema';
+import { mailGenerator, sendmail } from './common/mailer';
 
 @Injectable()
 export class MeService {
@@ -43,7 +44,7 @@ export class MeService {
     // add order
     async addOrder(createOrderDto: CreateOrderDto) {
         try{
-            const { userId, phone, country, city, address, lga, state, landmark = '', additionalNote = ''} = createOrderDto
+            let { userId = '', name, email, phone, country, city, address, lga, state, landmark = '', additionalNote = ''} = createOrderDto
 
             let orderId: string = 'order-'
             
@@ -52,6 +53,37 @@ export class MeService {
             for (let i = 0; i < 6; i++) {
                 const randomIndex = Math.floor(Math.random() * charset.length);
                 orderId += charset[randomIndex];
+            }
+
+            const user = await this.userModel.findOne({ email: email })
+            if(!user){
+                const userCreate = await this.userModel.create({ name, email, phone, address, country, state })
+
+                var emailSender: any = {
+                    body: {
+                        name: name,
+                        intro: 'Your order has been created and is being processed.\nTo track and see progress of order, log into account using the email you provided during shopping by first:\n1. Click the forgotten password link and enter the specified email.\n2. Reset your password\n3. Log into account with the new password and email.',
+    
+                        action: {
+                            instructions: 'To get started, click button below',
+                            button: {
+                                color: '#ffffff',
+                                text: `<span style="font-size: 30px; font-weight: bolder; color: black">Get Started</span>`,
+                                link: 'https://www.churchillexpansions.com/'
+                            }
+                        },
+                        
+                        outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.\n\n Team Churchil.'
+                    }
+                };
+    
+                let emailBody: any = mailGenerator.generate(emailSender);
+    
+                await sendmail(email, 'Email Verification', emailBody)
+
+                userId = userCreate._id
+            }else if(user && userId == ""){
+                userId = user._id
             }
 
             const order = await this.orderModel.create({ orderId, ...createOrderDto })

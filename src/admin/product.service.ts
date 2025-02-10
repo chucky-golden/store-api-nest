@@ -155,6 +155,10 @@ export class ProductService {
                 filters.name = { $regex: query.name, $options: 'i' };
             }
 
+            if (query.swap) {
+                filters.swap = true
+            }
+
             // New condition for rating count
             if (query.ratingCount !== undefined) {
                 const ratingCount = Number(query.ratingCount);

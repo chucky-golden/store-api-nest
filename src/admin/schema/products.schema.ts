@@ -68,6 +68,9 @@ export class Product extends Document{
 
     @Prop({ required: false, default: 0 })
     sellingCount: number
+
+    @Prop({ required: false, default: false })
+    swap: boolean
 }
 
 @Schema({ timestamps: true })

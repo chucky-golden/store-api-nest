@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 
 export class SignupDto {
@@ -69,4 +69,8 @@ export class ProductDto {
     @IsNotEmpty()
     @IsArray()
     readonly tags: string[];
+
+    @IsOptional()
+    @IsBoolean()
+    readonly swap: boolean;
 }
