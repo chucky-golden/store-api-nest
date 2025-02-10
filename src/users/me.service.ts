@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Cart, Order, SaveAddress } from './schema/order.schema';
+import { Cart, Order, SaveAddress, Swapped } from './schema/order.schema';
 import mongoose, { Model } from 'mongoose';
-import { CreateOrderDto, CreateRating, CreateReview } from './dto/user.dto';
+import { CreateOrderDto, CreateRating, CreateReview, CreateSwapDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { User } from './schema/user.schema';
@@ -17,6 +17,9 @@ export class MeService {
         // bringing in models
         @InjectModel(Order.name)
         private orderModel: Model<Order>,
+
+        @InjectModel(Swapped.name)
+        private swapModel: Model<Swapped>,
 
         @InjectModel(User.name)
         private userModel: Model<User>,
@@ -94,6 +97,19 @@ export class MeService {
         } catch (error: any) {
             console.log('data error ' + error);            
             throw new InternalServerErrorException(`order cannot be created now`);  
+        }
+    }
+
+    // add order
+    async addSwap(createSwapDto: CreateSwapDto) {
+        try{
+            const swap = await this.swapModel.create(createSwapDto)
+            
+            return { message: "request received", swap }
+
+        } catch (error: any) {
+            console.log('data error ' + error);            
+            throw new InternalServerErrorException(`request cannot be created now`);  
         }
     }
 

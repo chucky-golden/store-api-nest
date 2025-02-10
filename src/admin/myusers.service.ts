@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Order } from '../users/schema/order.schema';
+import { Order, Swapped } from '../users/schema/order.schema';
 import { User } from '../users/schema/user.schema';
 // import { paginate } from './common/pagination'
 
@@ -12,6 +12,9 @@ export class MyUsersService {
         @InjectModel(Order.name)
         private orderModel: Model<Order>,
 
+        @InjectModel(Swapped.name)
+        private swapModel: Model<Swapped>,
+
         @InjectModel(User.name)
         private userModel: Model<User>
     ){}
@@ -19,7 +22,6 @@ export class MyUsersService {
 
     // get all product/brand/orders
     async getAll(query: any) {
-        let result;
 
         if(query.type === 'orders'){
             const data = await this.orderModel.find({ paid: true }).sort({ createdAt: -1 })
@@ -31,11 +33,14 @@ export class MyUsersService {
             return {
                 data
             };            
+        }else if(query.type === 'swap'){
+            const data = await this.swapModel.find().sort({ createdAt: -1 })
+            return {
+                data
+            };            
         }else{
             throw new NotFoundException('invalid data (type parameter not specified)')
         }
-
-        return result
     }
     
 
@@ -52,10 +57,15 @@ export class MyUsersService {
             if(type === 'order'){
                 fetchData = await this.orderModel.findOne({ _id: id })
 
-            }else if(type === 'user'){
+            }
+            else if(type === 'user'){
                 fetchData = await this.userModel.findOne({ _id: id })
 
-            }else{
+            }
+            else if(type === 'swap'){
+                fetchData = await this.swapModel.findOne({ _id: id })
+            }
+            else{
                 throw new NotFoundException('id not found')
             }
 
@@ -93,6 +103,39 @@ export class MyUsersService {
             
 
             return { message: "update successful", orderData }
+
+        } catch (error: any) {
+            if (error instanceof BadRequestException && error.message === 'invalid entry') {
+                throw error;
+            } else {
+                console.log('data error ' + error);            
+                throw new InternalServerErrorException(`error processing request`);
+            }
+        }
+    }
+
+    // edit swapp status
+    async editSawp(dataDto: { id: string, status: string }) {
+
+        const isValidId = mongoose.isValidObjectId(dataDto.id)
+
+        if(!isValidId){
+            throw new BadRequestException('please enter a correct id')
+        }
+
+        try{
+
+            let swappedData = await this.swapModel.findOneAndUpdate({ _id: dataDto.id }, 
+                {
+                    $set:{
+                        status: dataDto.status
+                    }
+                },
+                { new: true }
+            )
+            
+
+            return { message: "update successful", swappedData }
 
         } catch (error: any) {
             if (error instanceof BadRequestException && error.message === 'invalid entry') {

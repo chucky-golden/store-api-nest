@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-valid
 
 
 export class SignupDto {
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid name' })
     @IsString()
     readonly name: string;
 
@@ -10,11 +10,11 @@ export class SignupDto {
     @IsEmail({}, { message: 'please enter correct email' })
     readonly email: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid phone number' })
     @IsString()
     readonly phone: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid password' })
     @IsString()
     password: string;
 
@@ -38,7 +38,7 @@ export class SigninDto {
     @IsEmail({}, { message: 'please enter correct email' })
     readonly email: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid password' })
     @IsString()
     readonly password: string;
 }
@@ -54,7 +54,7 @@ export class CreateReview {
     @IsString()
     readonly userId: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid review' })
     @IsString()
     readonly review: string;
 
@@ -86,7 +86,7 @@ export class CreateOrderDto {
     @IsString()
     readonly userId: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid name' })
     @IsString()
     readonly name: string;
 
@@ -94,27 +94,27 @@ export class CreateOrderDto {
     @IsEmail({}, { message: 'please enter correct email' })
     readonly email: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid phone number' })
     @IsString()
     readonly phone: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid country' })
     @IsString()
     readonly country: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid city' })
     @IsString()
     readonly city: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid address' })
     @IsString()
     readonly address: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid local government area' })
     @IsString()
     readonly lga: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid state' })
     @IsString()
     readonly state: string;
 
@@ -137,4 +137,91 @@ export class CreateOrderDto {
     @IsNotEmpty()
     @IsString()
     readonly itemTotal: string;
+}
+
+export class CreateSwapDto {
+
+    @IsNotEmpty({ message: 'enter valid phone number' })
+    @IsString()
+    readonly phoneType: string;
+
+    @IsNotEmpty({ message: 'enter valid device model' })
+    @IsString()
+    readonly deviceModel: string;
+
+    @IsNotEmpty({ message: 'enter valid device storage' })
+    @IsString()
+    readonly deviceStorage: string;
+
+    @IsNotEmpty({ message: 'enter valid device model you want to receive' })
+    @IsString()
+    readonly receiveModel: string;
+
+    @IsNotEmpty({ message: 'enter valid device storage you want to receive' })
+    @IsString()
+    readonly receiveStorage: string;
+
+    @IsNotEmpty({ message: 'enter valid fullname' })
+    @IsString()
+    readonly fullName: string;
+
+    @IsNotEmpty()
+    @IsEmail({}, { message: 'please enter correct email' })
+    readonly email: string;
+
+    @IsNotEmpty({ message: 'enter valid phone number' })
+    @IsString()
+    readonly phone: string;
+
+    @IsOptional({ message: 'enter valid camera quality' })
+    @IsString()
+    readonly camera: string;
+    
+    @IsOptional({ message: 'enter valid battery quality' })
+    @IsString()
+    readonly battery: string;
+
+    @IsNotEmpty({ message: 'enter valid phone condition' })
+    @IsString()
+    readonly condition: string;
+
+    @IsNotEmpty({ message: 'enter valid screen condition' })
+    @IsString()
+    readonly screenCondition: string;
+
+    @IsNotEmpty({ message: 'enter valid microphone condition' })
+    @IsString()
+    readonly microphone: string;
+
+    @IsNotEmpty({ message: 'enter valid speaker condition' })
+    @IsString()
+    readonly speaker: string;
+
+    @IsNotEmpty({ message: 'has your phone being repaired' })
+    @IsString()
+    readonly repaired: string;
+
+    @IsNotEmpty({ message: 'enter valid repaired part' })
+    @IsString()
+    readonly repairedPart: string;
+
+    @IsNotEmpty({ message: 'enter valid warranty' })
+    @IsString()
+    readonly warranty: string;
+
+    @IsNotEmpty({ message: 'enter valid insurred answer' })
+    @IsString()
+    readonly insurred: string;
+
+    @IsOptional()
+    @IsString()
+    readonly addittionalInfo: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly picFront: string;
+
+    @IsNotEmpty()
+    @IsString()
+    readonly picBack: string;
 }

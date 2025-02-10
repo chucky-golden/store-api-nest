@@ -12,7 +12,7 @@ import { AuthModule } from '../auth/auth.module';
 import { MyUsersController } from './myusers.controller';
 import { MyUsersService } from './myusers.service';
 import { UserSchema } from 'src/users/schema/user.schema';
-import { OrderSchema } from 'src/users/schema/order.schema';
+import { OrderSchema, SwapSchema } from 'src/users/schema/order.schema';
 
 @Module({
   imports: [
@@ -26,7 +26,8 @@ import { OrderSchema } from 'src/users/schema/order.schema';
       { name: 'Rating', schema: RatingSchema },
       { name: 'User', schema: UserSchema },
       { name: 'Order', schema: OrderSchema },
-      { name: 'Flyer', schema: FlyerSchema }
+      { name: 'Flyer', schema: FlyerSchema },
+      { name: 'Swapped', schema: SwapSchema },
     ])
   ],
   controllers: [AdminController, ProductController, MyUsersController],

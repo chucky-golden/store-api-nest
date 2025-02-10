@@ -1,6 +1,6 @@
 import { Post, Body, Controller, UseGuards, Get, Param, Patch, NotFoundException, Query, Delete } from '@nestjs/common';
 import { MeService } from './me.service';
-import { CreateOrderDto, CreateRating, CreateReview } from './dto/user.dto';
+import { CreateOrderDto, CreateRating, CreateReview, CreateSwapDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -17,6 +17,13 @@ export class MeController {
     // @UseGuards(JwtAuthGuard)
     createOrder(@Body() body: CreateOrderDto){       
         return this.meService.addOrder(body)
+    }
+
+    // add swap
+    @Post('/swap')
+    // @UseGuards(JwtAuthGuard)
+    createSwap(@Body() body: CreateSwapDto){       
+        return this.meService.addSwap(body)
     }
 
     // add product to favourite

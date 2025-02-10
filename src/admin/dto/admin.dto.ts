@@ -27,34 +27,34 @@ export class SigninDto {
 
 export class ProductDto {
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid product name' })
     @IsString()
     readonly name: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid price' })
     @IsString()
     readonly price: string;
 
     @IsOptional()
     readonly sku: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid quantity' })
     @IsNumber()
     readonly quantity: number;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid category' })
     @IsString()
     readonly category: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid brand' })
     @IsString()
     readonly brand: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid description' })
     @IsString()
     readonly description: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid specifications' })
     @IsArray()
     readonly specifications: string[];
 
@@ -62,11 +62,11 @@ export class ProductDto {
     @IsArray()
     readonly colors: string[];
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid features' })
     @IsArray()
     readonly features: string[];
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'enter valid tags' })
     @IsArray()
     readonly tags: string[];
 

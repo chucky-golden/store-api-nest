@@ -27,18 +27,31 @@ export class MyUsersController {
         return this.myUsersService.getOne(id, 'user')
     }
 
-    // edit category
+    // get user by id
+    @Get('/swap/:id')
+    getSwapById(@Param('id') id: string){             
+        return this.myUsersService.getOne(id, 'swap')
+    }
+
+    // edit order
     @Patch('/editorder')
     @UseGuards(JwtAuthGuard)
     editOrder(@Body() body: { id: string, status: string }){       
         return this.myUsersService.editOrder(body)
     }
 
-    // edit category
+    // edit user
     @Patch('/edituser')
     @UseGuards(JwtAuthGuard)
     editUser(@Body() body: { id: string, active: number }){       
         return this.myUsersService.editUser(body)
+    }
+    
+    // edit swapped
+    @Patch('/editswap')
+    @UseGuards(JwtAuthGuard)
+    editSawp(@Body() body: { id: string, status: string }){       
+        return this.myUsersService.editSawp(body)
     }
 
     
