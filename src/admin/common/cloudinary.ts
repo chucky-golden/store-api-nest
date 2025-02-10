@@ -65,7 +65,6 @@ export class UploadService {
         try {
             // Use the Cloudinary API to delete the image
             await cloudinaryV2.uploader.destroy(id);
-            console.log(`Image with public ID ${id} deleted from Cloudinary`);
         } catch (error) {
             console.error('Error deleting image from Cloudinary:', error);
             throw error;

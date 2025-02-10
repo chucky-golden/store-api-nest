@@ -185,13 +185,8 @@ export class ProductService {
                         }
                     }
                 ]);
-
-                console.log('agrre', productsWithRating);
                 
-                filters._id = { $in: productsWithRating.map(product => product._id) }
-
-                console.log('filters', filters);
-                
+                filters._id = { $in: productsWithRating.map(product => product._id) }                
             }
 
 
