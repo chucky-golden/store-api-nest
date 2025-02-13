@@ -47,7 +47,7 @@ export class MeService {
     // add order
     async addOrder(createOrderDto: CreateOrderDto) {
         try{
-            let { userId = '', name, email, phone, country, city, address, lga, state, landmark = '', additionalNote = ''} = createOrderDto
+            let { userId = '', name, email, phone, country = '', city = '', address = '', lga = '', state = '', landmark = '', additionalNote = ''} = createOrderDto
 
             let orderId: string = 'order-'
             
