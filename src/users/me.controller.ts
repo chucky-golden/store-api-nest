@@ -70,7 +70,7 @@ export class MeController {
 
     // get arrays from frontend and update product selling count.
     @Post('/cart')
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     createCart(@Body() body: any){       
         return this.meService.createCart(body)
     }
@@ -126,7 +126,7 @@ export class MeController {
 
     // edit order by id and set paid to 1
     @Patch('/order/:id')
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     updateOrderById(@Param('id') id: string){
         return this.meService.updateOrder(id)
     }
