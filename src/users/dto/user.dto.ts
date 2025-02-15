@@ -98,23 +98,23 @@ export class CreateOrderDto {
     @IsString()
     readonly phone: string;
 
-    @IsNotEmpty({ message: 'enter valid country' })
+    @IsOptional({ message: 'enter valid country' })
     @IsString()
     readonly country: string;
 
-    @IsNotEmpty({ message: 'enter valid city' })
+    @IsOptional({ message: 'enter valid city' })
     @IsString()
     readonly city: string;
 
-    @IsNotEmpty({ message: 'enter valid address' })
+    @IsOptional({ message: 'enter valid address' })
     @IsString()
     readonly address: string;
 
-    @IsNotEmpty({ message: 'enter valid local government area' })
+    @IsOptional({ message: 'enter valid local government area' })
     @IsString()
     readonly lga: string;
 
-    @IsNotEmpty({ message: 'enter valid state' })
+    @IsOptional({ message: 'enter valid state' })
     @IsString()
     readonly state: string;
 

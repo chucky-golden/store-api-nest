@@ -21,25 +21,25 @@ export class Order extends Document{
     @Prop()
     phone: string
 
-    @Prop()
+    @Prop({ required: false })
     country: string
 
-    @Prop()
+    @Prop({ required: false })
     city: string
     
-    @Prop()
+    @Prop({ required: false })
     address: string
     
-    @Prop()
+    @Prop({ required: false })
     lga: string
     
-    @Prop()
+    @Prop({ required: false })
     state: string
     
-    @Prop()
+    @Prop({ required: false })
     landmark: string
     
-    @Prop()
+    @Prop({ required: false })
     additionalNote: string
 
     @Prop()
